@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Auth, type Appereance, css, ThemeSupa } from 'vue-auth-ui'
 
-import { supabase } from '../../utils/supabase'
+import { handleOAuthLogin } from '@/utils/supabase'
 
 const appearance: Appereance = {
   theme: ThemeSupa,
@@ -27,6 +27,6 @@ let myError: string | undefined
     :appearance="appearance"
     :error="myError"
     :onlyThirdPartyProviders="true"
-    @signInWithOAuth="provider => supabase.auth.signInWithOAuth(provider)"
+    @signInWithOAuth="provider => handleOAuthLogin(provider)"
   />
 </template>

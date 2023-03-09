@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getSession } from '@/utils/supabase'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import LoginView from '@/views/LoginView.vue'
 import KitView from '@/views/KitView.vue'
+import AccountView from '@/views/AccountView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -36,6 +38,20 @@ const router = createRouter({
       meta: {
         titlePrefix: "Kit"
       }
+    },
+    {
+      path: '/account',
+      name: 'account',
+      component: AccountView,
+      meta: {
+        titlePrefix: 'Account'
+      },
+      beforeEnter: async (to, from) => {
+        const retrievedSession = await getSession();
+        if (!retrievedSession) {
+          return { name: 'login' }
+        }
+      },
     }
   ]
 });

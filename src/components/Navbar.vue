@@ -1,5 +1,5 @@
 <script setup>
-import { supabase, getSession, signOut } from '../utils/supabase'
+import { supabase, getSession, signOut } from '@/utils/supabase'
 import { onMounted, ref, watch } from 'vue'
 
 const session = ref({});
@@ -7,7 +7,7 @@ const user = ref();
 
 onMounted(async () => {
   const retrievedSession = await getSession();
-  session.value = retrievedSession.data.session;
+  session.value = retrievedSession;
   
   if (session.value) {
     // console.log('Session has value, processing user data')
@@ -68,6 +68,10 @@ export default {
 
         <v-card>
           <div class="mx-auto text-center">
+            <v-btn prepend-icon="mdi-account" :rounded="0" to="/account">
+              Account
+            </v-btn>
+            <v-divider />
             <v-btn prepend-icon="mdi-login" :rounded="0" @click="signOut()">
               Logout
             </v-btn>
