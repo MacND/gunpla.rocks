@@ -44,20 +44,26 @@ export default {
 </script>
 
 <template>
-  <v-app-bar color="blue-grey-darken-3" density="compact">
+  <v-app-bar color="indigo-darken-3" density="compact">
     <template v-slot:prepend>
       <router-link to="/">
         <v-img src="/favicon.ico" :width=32></v-img>
       </router-link>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
     </template>
 
-    <v-app-bar-title>gunpla.rocks</v-app-bar-title>
+    <v-text-field
+        hide-details
+        hide-no-data
+        prepend-inner-icon="mdi-magnify"
+        single-line
+        clearable 
+        label="Search..."
+        class="mx-4"
+      ></v-text-field>
 
     <template v-slot:append>
-      <v-btn icon="mdi-magnify"></v-btn>
-
       <v-menu location="bottom">
         <template v-slot:activator="{ props }">
           <v-btn icon v-if="user" v-bind="props">
