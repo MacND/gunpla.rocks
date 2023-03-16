@@ -4,43 +4,22 @@ import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import placeholderImg from '@/assets/placeholder.jpg'
 
-
 const route = useRoute();
 const id = route.params.id;
 const kit = ref();
 const images = ref();
 
-onMounted(() => {
-  if (id) {
-    getKitByID(id);
-    getImages(id);
-  }
-})
-
-async function getKitByID(id) {
-  const { data, error } = await supabase
-    .from('kit_view')
-    .select('*')
-    .eq('model_number', id)
-    .limit(1)
-
-  if (data.length > 0) {
-    kit.value = await data.pop();
-    document.title = `${kit.value.grade_series} ${kit.value.title} - gunpla.rocks`
-  } 
-}
-
 async function getImages(modelNumber) {
   const { data, error } = await supabase
-    .storage
-    .from('kit-images')
-    .list(modelNumber, {
-      limit: 20,
-      offset: 0,
-      sortBy: { column: 'name', order: 'asc' },
-    })
-
-
+  .storage
+  .from('kit-images')
+  .list(modelNumber, {
+    limit: 20,
+    offset: 0,
+    sortBy: { column: 'name', order: 'asc' },
+  })
+  
+  
   if (data) {
     images.value = data.filter((obj) => {
       return obj.name !== 'box-art.webp'
@@ -48,21 +27,25 @@ async function getImages(modelNumber) {
   }
 }
 
-beforeEnter: async (to, from) => {
-        if (to.params.id) {
-          const { data, error } = await supabase
-            .from('kit_view')
-            .select('*')
-            .eq('model_number', to.params.id)
-            .limit(1)
+async function getKitByID(kitID) {
+  const { data, error } = await supabase
+    .from('kit_view')
+    .select('*')
+    .eq('model_number', kitID)
+    .limit(1);
+  
+  if (data.length > 0) {
+    kit.value = await data.pop();
+    document.title = `${kit.value.grade_series} ${kit.value.title} - gunpla.rocks`
+  } 
+}
 
-          if (data.length > 0) {
-            to.params.kitDetails = await data.pop()
-            console.log(to.params.kitDetails)
-            document.title = `${to.params.kitDetails.grade_series} ${to.params.kitDetails.title} - gunpla.rocks`
-          } 
-        } 
-      }
+onMounted(() => {
+  if (id) {
+    getKitByID(id);
+    getImages(id);
+  }
+});
 </script>
 
 <script>
@@ -89,9 +72,9 @@ async function copyUrl(link) {
     <meta property="og:type" content="website">
     <meta property="og:url" :content="new URL(route.path, window.location.origin).href">
     <meta property="og:title" :content="kit.title + ' - gunpla.rocks'">
-    <meta property="og:description" :content="kit.grade_series kit.title">
-    <meta property="og:image" :content="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'">
-    
+    <meta property="og:description" :content="kit.grade_series + ' ' + kit.title">
+    <meta property="og:image" :content="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'"> -->
+
     <v-card class="pa-2 ma-2 justify-center" >
       <title>{{ kit.title + 'gunpla.rocks' }}</title>
       <div class="d-flex flex-wrap justify-start">
