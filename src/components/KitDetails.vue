@@ -8,6 +8,7 @@ const route = useRoute();
 const id = route.params.id;
 const kit = ref();
 const images = ref();
+const url = new URL(route.path, window.location.origin).href
 
 async function getImages(modelNumber) {
   const { data, error } = await supabase
@@ -70,7 +71,7 @@ async function copyUrl(link) {
 <template>
   <v-container v-if="kit" class="d-flex flex-wrap justify-center">
     <meta property="og:type" content="website">
-    <meta property="og:url" :content="new URL(route.path, window.location.origin).href">
+    <meta property="og:url" :content="url">
     <meta property="og:title" :content="kit.title + ' - gunpla.rocks'">
     <meta property="og:description" :content="kit.grade_series + ' ' + kit.title">
     <meta property="og:image" :content="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'"> -->
