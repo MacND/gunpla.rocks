@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6923f55a-4d03-49f6-bef3-a709b07f8a21/deploy-status)](https://app.netlify.com/sites/fastidious-sprite-11c33d/deploys)
+
 # gunpla.rocks
 
 This template should help get you started developing with Vue 3 in Vite.
