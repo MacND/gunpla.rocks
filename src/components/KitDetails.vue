@@ -86,6 +86,12 @@ async function copyUrl(link) {
 
 <template>
   <v-container v-if="kit" class="d-flex flex-wrap justify-center">
+    <meta property="og:type" content="website">
+    <meta property="og:url" :content="new URL(route.path, window.location.origin).href">
+    <meta property="og:title" :content="kit.title + ' - gunpla.rocks'">
+    <meta property="og:description" :content="kit.grade_series kit.title">
+    <meta property="og:image" :content="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'">
+    
     <v-card class="pa-2 ma-2 justify-center" >
       <title>{{ kit.title + 'gunpla.rocks' }}</title>
       <div class="d-flex flex-wrap justify-start">
