@@ -4,13 +4,31 @@ import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import placeholderImg from '@/assets/placeholder.jpg'
 
+
 const route = useRoute();
-const kit = route.params.kitDetails;
+const id = route.params.id;
+const kit = ref();
 const images = ref();
 
 onMounted(() => {
-  getImages(kit.model_number);
+  if (id) {
+    getKitByID(id);
+    getImages(id);
+  }
 })
+
+async function getKitByID(id) {
+  const { data, error } = await supabase
+    .from('kit_view')
+    .select('*')
+    .eq('model_number', id)
+    .limit(1)
+
+  if (data.length > 0) {
+    kit.value = await data.pop();
+    document.title = `${kit.value.grade_series} ${kit.value.title} - gunpla.rocks`
+  } 
+}
 
 async function getImages(modelNumber) {
   const { data, error } = await supabase
@@ -28,8 +46,23 @@ async function getImages(modelNumber) {
       return obj.name !== 'box-art.webp'
     })
   }
-
 }
+
+beforeEnter: async (to, from) => {
+        if (to.params.id) {
+          const { data, error } = await supabase
+            .from('kit_view')
+            .select('*')
+            .eq('model_number', to.params.id)
+            .limit(1)
+
+          if (data.length > 0) {
+            to.params.kitDetails = await data.pop()
+            console.log(to.params.kitDetails)
+            document.title = `${to.params.kitDetails.grade_series} ${to.params.kitDetails.title} - gunpla.rocks`
+          } 
+        } 
+      }
 </script>
 
 <script>
@@ -52,8 +85,8 @@ async function copyUrl(link) {
 </script>
 
 <template>
-  <v-container class="d-flex flex-wrap justify-center">
-    <v-card color="grey-darken-3" class="pa-2 ma-2 justify-center">
+  <v-container v-if="kit" class="d-flex flex-wrap justify-center">
+    <v-card class="pa-2 ma-2 justify-center" >
       <title>{{ kit.title + 'gunpla.rocks' }}</title>
       <div class="d-flex flex-wrap justify-start">
         <div>
@@ -61,12 +94,12 @@ async function copyUrl(link) {
             {{ kit.grade_series }} {{ kit.title }}
           </v-card-title>
 
-          <v-card-subtitle class="text-wrap">
+          <v-card-subtitle class="text-wrap pb-2">
             {{ kit.subtitle }}
             <v-divider></v-divider>
           </v-card-subtitle>
         </div>
-        <v-carousel class="pa-2" hide-delimiters progress="indigo-accent-1">
+        <v-carousel class="pa-2" hide-delimiters>
           <v-carousel-item :lazy-src=placeholderImg 
             :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'" />
           <v-carousel-item v-for="image in images" :lazy-src=placeholderImg
@@ -86,10 +119,10 @@ async function copyUrl(link) {
 
       </div>
       <v-card-actions>
-        <v-btn prepend-icon="mdi-arrow-left" color="indigo-accent-1" :to="{ name: 'kit' }">
+        <v-btn prepend-icon="mdi-arrow-left" variant="tonal" :to="{ name: 'kit' }">
           Back
         </v-btn>
-        <v-btn prepend-icon="mdi-content-copy" color="indigo-accent-1" :to="{ name: 'kit', params: { id: kit.model_number } }"
+        <v-btn prepend-icon="mdi-content-copy" variant="tonal" :to="{ name: 'kit', params: { id: kit.model_number } }"
           @click="copyUrl(route.path); snackbar = true">
           Copy Link
         </v-btn>

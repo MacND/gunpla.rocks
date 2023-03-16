@@ -40,21 +40,6 @@ const router = createRouter({
       params: true,
       meta: {
         titlePrefix: "Kit"
-      },
-      beforeEnter: async (to, from) => {
-        if (to.params.id) {
-          const { data, error } = await supabase
-            .from('kit_view')
-            .select('*')
-            .eq('model_number', to.params.id)
-            .limit(1)
-
-          if (data.length > 0) {
-            to.params.kitDetails = await data.pop()
-            console.log(to.params.kitDetails)
-            document.title = `${to.params.kitDetails.grade_series} ${to.params.kitDetails.title} - gunpla.rocks`
-          } 
-        } 
       }
     },
     {

@@ -3,14 +3,13 @@ import { useRoute } from 'vue-router'
 import KitDetails from '@/components/KitDetails.vue'
 import Kits from '@/components/Kits.vue'
 
-const route = useRoute();
-// const id = route.params.id;
+let route = useRoute();
 
 </script>
 
 <template>
   <Suspense>
-    <KitDetails v-if="route.params.id"/>
+    <KitDetails :key="$route.params.id" v-if="route.params.id"/>
     <Kits v-else />
   </Suspense>
 
