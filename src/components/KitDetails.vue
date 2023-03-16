@@ -2,27 +2,15 @@
 import { supabase } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
+import placeholderImg from '@/assets/placeholder.jpg'
 
-const kits = ref({});
 const route = useRoute();
-const id = route.params.id;
+const kit = route.params.kitDetails;
 const images = ref();
 
 onMounted(() => {
-  getKitByID(id);
-  getImages(id);
+  getImages(kit.model_number);
 })
-
-async function getKitByID(id) {
-  const { data, error } = await supabase
-    .from('kits')
-    .select('*')
-    .eq('model_number', id)
-    .limit(1)
-  if (error) throw error
-
-  kits.value = data
-}
 
 async function getImages(modelNumber) {
   const { data, error } = await supabase
@@ -34,9 +22,13 @@ async function getImages(modelNumber) {
       sortBy: { column: 'name', order: 'asc' },
     })
 
+
   if (data) {
-    images.value = data
+    images.value = data.filter((obj) => {
+      return obj.name !== 'box-art.webp'
+    })
   }
+
 }
 </script>
 
@@ -61,7 +53,8 @@ async function copyUrl(link) {
 
 <template>
   <v-container class="d-flex flex-wrap justify-center">
-    <v-card color="indigo-darken-2" v-for="kit in kits" :key="kit.ean" class="pa-2 ma-2 justify-center" max-width="700px">
+    <v-card color="grey-darken-3" class="pa-2 ma-2 justify-center">
+      <title>{{ kit.title + 'gunpla.rocks' }}</title>
       <div class="d-flex flex-wrap justify-start">
         <div>
           <v-card-title class="text-wrap">
@@ -73,8 +66,10 @@ async function copyUrl(link) {
             <v-divider></v-divider>
           </v-card-subtitle>
         </div>
-        <v-carousel class="pa-2" height="400px" hide-delimiters>
-          <v-carousel-item v-for="image in images" lazy-src="/src/assets/placeholder.jpg"
+        <v-carousel class="pa-2" hide-delimiters progress="indigo-accent-1">
+          <v-carousel-item :lazy-src=placeholderImg 
+            :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'" />
+          <v-carousel-item v-for="image in images" :lazy-src=placeholderImg
             :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/' + image.name" />
         </v-carousel>
 
@@ -91,10 +86,10 @@ async function copyUrl(link) {
 
       </div>
       <v-card-actions>
-        <v-btn prepend-icon="mdi-arrow-left" :to="{ name: 'kit' }">
+        <v-btn prepend-icon="mdi-arrow-left" color="indigo-accent-1" :to="{ name: 'kit' }">
           Back
         </v-btn>
-        <v-btn prepend-icon="mdi-content-copy" :to="{ name: 'kit', params: { id: kit.model_number } }"
+        <v-btn prepend-icon="mdi-content-copy" color="indigo-accent-1" :to="{ name: 'kit', params: { id: kit.model_number } }"
           @click="copyUrl(route.path); snackbar = true">
           Copy Link
         </v-btn>

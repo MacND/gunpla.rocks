@@ -12,7 +12,6 @@ export default {
 </script>
 
 <template>
-  <title>{{ route.name }}</title>
   <v-app>
     <NavBar />
     <v-main>

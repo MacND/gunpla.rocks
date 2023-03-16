@@ -1,10 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getSession } from '@/utils/supabase'
+import { getSession, supabase } from '@/utils/supabase'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import LoginView from '@/views/LoginView.vue'
 import KitView from '@/views/KitView.vue'
 import AccountView from '@/views/AccountView.vue'
+import ErrorView from '@/views/ErrorView.vue'
+// import { props } from 'v-lazy-image'
+// import { SupabaseAuthClient } from '@supabase/supabase-js/dist/module/lib/SupabaseAuthClient'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -37,6 +40,21 @@ const router = createRouter({
       params: true,
       meta: {
         titlePrefix: "Kit"
+      },
+      beforeEnter: async (to, from) => {
+        if (to.params.id) {
+          const { data, error } = await supabase
+            .from('kit_view')
+            .select('*')
+            .eq('model_number', to.params.id)
+            .limit(1)
+
+          if (data.length > 0) {
+            to.params.kitDetails = await data.pop()
+            console.log(to.params.kitDetails)
+            document.title = `${to.params.kitDetails.grade_series} ${to.params.kitDetails.title} - gunpla.rocks`
+          } 
+        } 
       }
     },
     {
@@ -57,7 +75,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
- // Get the page title from the route meta data that we have defined
+  // Get the page title from the route meta data that we have defined
   // See further down below for how we setup this data
   const title = to.meta.titlePrefix
 
@@ -69,7 +87,7 @@ router.beforeEach((to, from, next) => {
   } else {
     document.title = "gunpla.rocks"
   }
-  
+
   if (titleFromParams) {
     document.title = `${titleFromParams} - ${document.title}`;
   }

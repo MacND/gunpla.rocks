@@ -44,14 +44,14 @@ export default {
 </script>
 
 <template>
-  <v-app-bar color="indigo-darken-3" density="compact">
-    <template v-slot:prepend>
-      <router-link to="/">
-        <v-img src="/favicon.ico" :width=32></v-img>
-      </router-link>
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+  <v-app-bar color="indigo" density="compact">
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="me-2"/>
 
-    </template>
+      <router-link to="/">
+        <v-img src="/favicon.ico" :width=36 />
+      </router-link>
+
+
 
     <v-text-field
         hide-details
