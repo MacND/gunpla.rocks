@@ -77,7 +77,7 @@ async function copyUrl(link) {
       <meta property="og:image" :content="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'">
       <meta name="twitter:card" content="summary_large_image">
     </Teleport>
-    <v-card class="pa-2 ma-2 justify-center" >
+    <v-card class="pa-2 ma-2 justify-center" color="grey-darken-3">
       <title>{{ kit.title + 'gunpla.rocks' }}</title>
       <div class="d-flex flex-wrap justify-start">
         <div>
