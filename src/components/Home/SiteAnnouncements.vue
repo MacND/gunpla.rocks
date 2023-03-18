@@ -13,8 +13,6 @@ async function getSiteAnnouncements() {
     .select('*')
     .limit(3)
 
-  console.log(data)
-
   if (error) throw error
 
   announcements.value = data

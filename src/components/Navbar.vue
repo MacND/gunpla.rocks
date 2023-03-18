@@ -10,12 +10,10 @@ onMounted(async () => {
   session.value = retrievedSession;
   
   if (session.value) {
-    // console.log('Session has value, processing user data')
     user.value = JSON.parse(JSON.stringify(session.value.user))
   }
 
   supabase.auth.onAuthStateChange((_, _session) => {
-    // console.log('Auth state changed!')
     session.value = _session
   })
 })
