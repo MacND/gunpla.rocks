@@ -21,18 +21,18 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <v-card>
+    <v-card color="grey-darken-3">
       <v-list lines="one" density="compact" >
         <v-list-subheader class="text-overline">Recently Added Kits</v-list-subheader>
       </v-list>
       <v-divider></v-divider>
       <v-list>
         <v-list-item v-for="kit in kits"
-          :key="kit?.model_number" 
-          :title="kit?.grade_series + ' ' + kit?.title"
-          :subtitle="kit?.subtitle"
-          :prepend-avatar="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit?.model_number + '/box-art.webp'"
-          :to="{ name: 'kit', params: { id: kit?.model_number } }">
+          :key="kit.model_number" 
+          :title="kit.grade_series + ' ' + kit.title"
+          :subtitle="kit.subtitle"
+          :prepend-avatar="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'"
+          :to="{ name: 'kit', params: { id: kit.model_number } }">
         </v-list-item>
       </v-list>
     </v-card>

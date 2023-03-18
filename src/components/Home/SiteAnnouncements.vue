@@ -25,17 +25,17 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <v-card>
+    <v-card color="grey-darken-3">
       <v-list lines="one" density="compact" >
         <v-list-subheader class="text-overline">Site Announcements</v-list-subheader>
       </v-list>
       <v-divider></v-divider>
       <v-list lines="two">
         <v-list-item v-for="item in announcements"
-          :key="item?.id" 
-          :title="item?.title + ' - by ' + item?.full_name + ', ' + dayjs().to(dayjs(item?.created_at))"
-          :subtitle="item?.body"
-          :prepend-avatar="item?.avatar_url" >
+          :key="item.id" 
+          :title="item.title + ' - by ' + item.full_name + ', ' + dayjs().to(dayjs(item.created_at))"
+          :subtitle="item.body"
+          :prepend-avatar="item.avatar_url" >
         </v-list-item>
       </v-list>
     </v-card>
