@@ -25,7 +25,7 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <v-card color="grey-darken-3">
+    <v-card color="grey-darken-3" v-if="announcements">
       <v-list lines="one" density="compact" >
         <v-list-subheader class="text-overline">Site Announcements</v-list-subheader>
       </v-list>
