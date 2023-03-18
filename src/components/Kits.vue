@@ -20,14 +20,6 @@ onMounted(() => {
 })
 </script>
 
-<script>
-export default {
-  data: () => ({
-    show: false,
-  })
-}
-</script>
-
 <template>
   <v-container>
     <div class="d-flex flex-wrap align-content-center justify-center">
