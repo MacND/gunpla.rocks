@@ -1,6 +1,6 @@
 <script setup>
 import RecentlyAddedKits from '@/components/Home/RecentlyAddedKits.vue'
-import SiteAnnouncements from '../components/Home/SiteAnnouncements.vue';
+import SiteAnnouncements from '@/components/Home/SiteAnnouncements.vue';
 </script>
 
 <template>
