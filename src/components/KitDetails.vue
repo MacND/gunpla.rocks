@@ -1,5 +1,5 @@
 <script setup>
-import { supabase } from '@/utils/supabase'
+import { supabase, getSession } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import placeholderImg from '@/assets/placeholder.jpg'
@@ -9,6 +9,10 @@ const id = route.params.id;
 const kit = ref();
 const images = ref();
 const url = new URL(route.path, window.location.origin).href
+const session = ref();
+const collection = ref([]);
+
+session.value = await getSession();
 
 async function getImages(modelNumber) {
   const { data, error } = await supabase
@@ -34,10 +38,37 @@ async function getKitByID(kitID) {
     .select('*')
     .eq('model_number', kitID)
     .limit(1);
-  
+
   if (data.length > 0) {
     kit.value = await data.pop();
     document.title = `${kit.value.grade_series} ${kit.value.title} - gunpla.rocks`
+  } 
+}
+
+async function getCollectionForUser() {
+  const { data, error } = await supabase
+  .from('collections')
+  .select('*');
+
+  if (data?.length > 0) {
+    collection.value = data
+  }
+}
+
+async function addKitToCollection(kitID) {
+  try {
+    const { data, error } = await supabase
+      .from('collections')
+      .insert(
+        { 'kit_model_number': kitID }
+      );
+  } catch (error) {
+    console.error(error.message)
+    return false
+  }
+
+  if (data?.length > 0) {
+    return true
   } 
 }
 
@@ -45,6 +76,7 @@ onMounted(() => {
   if (id) {
     getKitByID(id);
     getImages(id);
+    getCollectionForUser();
   }
 });
 </script>
@@ -98,22 +130,24 @@ async function copyUrl(link) {
         </v-carousel>
 
         
-        <v-card class="pa-2 ma-2 d-flex mt-auto" width="100%" color="grey-darken-3">
+        <v-card class="ma-2 d-flex mt-auto" width="100%" color="grey-darken-3">
           <v-card-text>
-            <div> {{ kit.grade }} {{ kit.scale }} Scale</div>
-            <div v-if="kit.series_number"> {{ kit.grade_series }} #{{ kit.series_number }} </div>
-            <div> Released: {{ kit.released_date }} </div>
-            <div> Bandai Model Number: {{ kit.model_number }} </div>
-            <div> EAN: {{ kit.ean }} </div>
+            <p> {{ kit.grade }} {{ kit.scale }} Scale</p>
+            <p v-if="kit.series_number"> {{ kit.grade_series }} #{{ kit.series_number }} </p>
+            <p> Released: {{ kit.released_date }} </p>
+            <p> Bandai Model Number: {{ kit.model_number }} </p>
+            <p> EAN: {{ kit.ean }} </p>
           </v-card-text>
         </v-card>
 
 
       </div>
       <v-card-actions class="mb-2">
-        <!-- <v-btn prepend-icon="mdi-arrow-left" variant="tonal" @click="$router.go(-1)">
-          Back
-        </v-btn> -->
+        <v-tooltip v-if="session" text="Add to Collection" location="top">
+          <template v-slot:activator="{ props }">
+            <v-btn icon="mdi-plus" variant="tonal" v-bind="props" @click="addKitToCollection(kit.model_number)" />
+          </template>
+        </v-tooltip>
         <v-btn prepend-icon="mdi-content-copy" variant="tonal" :to="{ name: 'kit', params: { id: kit.model_number } }"
           @click="copyUrl(route.path); snackbar = true">
           Copy Link

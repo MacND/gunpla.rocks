@@ -13,9 +13,9 @@ export default {
 
 <template>
   <v-app>
-    <NavBar />
+      <NavBar />
     <v-main>
       <router-view/>
     </v-main>
-</v-app>
+  </v-app>
 </template>

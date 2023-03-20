@@ -45,11 +45,11 @@ onMounted(() => {
         </div>
         <v-spacer></v-spacer>
         <v-card-actions class="mt-auto">
-          <v-tooltip text="Add to Collection" location="top">
+          <!-- <v-tooltip text="Add to Collection" location="top">
             <template v-slot:activator="{ props }">
               <v-btn icon="mdi-plus" variant="tonal" color="indigo-accent-1" v-bind="props" />
             </template>
-          </v-tooltip>
+          </v-tooltip> -->
 
           <v-btn icon="mdi-clipboard-list-outline" color="indigo-accent-1" variant="tonal" />
 

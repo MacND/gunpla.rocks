@@ -16,7 +16,8 @@
     "vue": "^3.2.47",
     "vue-auth-ui": "^0.1.1",
     "vue-router": "^4.1.6",
-    "vue3-dayjs-plugin": "^1.0.2"
+    "vue3-dayjs-plugin": "^1.0.2",
+    "vuejs-medium-editor": "^3.0.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",

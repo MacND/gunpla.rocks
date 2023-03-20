@@ -3,7 +3,8 @@ import { getSession, supabase } from '@/utils/supabase'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import LoginView from '@/views/LoginView.vue'
-import KitView from '@/views/KitView.vue'
+import KitDBView from '@/views/KitDBView.vue'
+import KitDetailsView from '@/views/KitDetailsView.vue'
 import AccountView from '@/views/AccountView.vue'
 
 const router = createRouter({
@@ -31,9 +32,17 @@ const router = createRouter({
       }
     },
     {
-      path: '/kit/:id?',
+      path: '/db',
+      name: 'db',
+      component: KitDBView,
+      meta: {
+        titlePrefix: "KitDB"
+      }
+    },
+    {
+      path: '/kit/:id',
       name: 'kit',
-      component: KitView,
+      component: KitDetailsView,
       params: true,
       meta: {
         titlePrefix: "Kit"

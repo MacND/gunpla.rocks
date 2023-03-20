@@ -38,3 +38,4 @@ export const getUserData = async (session) => {
     console.log('Error while retrieving user data')
   }
 }
+
