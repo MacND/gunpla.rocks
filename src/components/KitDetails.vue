@@ -10,9 +10,15 @@ const kit = ref();
 const images = ref();
 const url = new URL(route.path, window.location.origin).href
 const session = ref();
-const collection = ref([]);
+// const collection = ref([]);
 
-session.value = await getSession();
+session.value = async () => {
+  await getSession();
+}
+
+// async function retrieveUserSession() {
+//   session.value = await getSession();
+// }
 
 async function getImages(modelNumber) {
   const { data, error } = await supabase
@@ -23,7 +29,6 @@ async function getImages(modelNumber) {
     offset: 0,
     sortBy: { column: 'name', order: 'asc' },
   })
-  
   
   if (data) {
     images.value = data.filter((obj) => {
@@ -45,38 +50,39 @@ async function getKitByID(kitID) {
   } 
 }
 
-async function getCollectionForUser() {
-  const { data, error } = await supabase
-  .from('collections')
-  .select('*');
+// async function getCollectionForUser() {
+//   const { data, error } = await supabase
+//   .from('collections')
+//   .select('*');
 
-  if (data?.length > 0) {
-    collection.value = data
-  }
-}
+//   if (data?.length > 0) {
+//     collection.value = data
+//   }
+// }
 
-async function addKitToCollection(kitID) {
-  try {
-    const { data, error } = await supabase
-      .from('collections')
-      .insert(
-        { 'kit_model_number': kitID }
-      );
-  } catch (error) {
-    console.error(error.message)
-    return false
-  }
+// async function addKitToCollection(kitID) {
+//   try {
+//     const { data, error } = await supabase
+//       .from('collections')
+//       .insert(
+//         { 'kit_model_number': kitID }
+//       );
+//   } catch (error) {
+//     console.error(error.message)
+//     return false
+//   }
 
-  if (data?.length > 0) {
-    return true
-  } 
-}
+//   if (data?.length > 0) {
+//     return true
+//   } 
+// }
 
 onMounted(() => {
   if (id) {
     getKitByID(id);
     getImages(id);
-    getCollectionForUser();
+    // retrieveUserSession();
+    // getCollectionForUser();
   }
 });
 </script>
@@ -143,11 +149,11 @@ async function copyUrl(link) {
 
       </div>
       <v-card-actions class="mb-2">
-        <v-tooltip v-if="session" text="Add to Collection" location="top">
+        <!-- <v-tooltip v-if="session" text="Add to Collection" location="top">
           <template v-slot:activator="{ props }">
             <v-btn icon="mdi-plus" variant="tonal" v-bind="props" @click="addKitToCollection(kit.model_number)" />
           </template>
-        </v-tooltip>
+        </v-tooltip> -->
         <v-btn prepend-icon="mdi-content-copy" variant="tonal" :to="{ name: 'kit', params: { id: kit.model_number } }"
           @click="copyUrl(route.path); snackbar = true">
           Copy Link

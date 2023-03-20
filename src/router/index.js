@@ -3,9 +3,10 @@ import { getSession, supabase } from '@/utils/supabase'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import LoginView from '@/views/LoginView.vue'
-import KitDBView from '@/views/KitDBView.vue'
-import KitDetailsView from '@/views/KitDetailsView.vue'
 import AccountView from '@/views/AccountView.vue'
+// import KitDBView from '@/views/KitDBView.vue'
+// import KitDetailsView from '@/views/KitDetailsView.vue'
+import KitView from '@/views/KitView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,18 +32,18 @@ const router = createRouter({
         titlePrefix: "About"
       }
     },
+    // {
+    //   path: '/db',
+    //   name: 'db',
+    //   component: KitDBView,
+    //   meta: {
+    //     titlePrefix: "KitDB"
+    //   }
+    // },
     {
-      path: '/db',
-      name: 'db',
-      component: KitDBView,
-      meta: {
-        titlePrefix: "KitDB"
-      }
-    },
-    {
-      path: '/kit/:id',
+      path: '/kit/:id?',
       name: 'kit',
-      component: KitDetailsView,
+      component: KitView,
       params: true,
       meta: {
         titlePrefix: "Kit"

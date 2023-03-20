@@ -88,7 +88,7 @@ export default {
   <v-navigation-drawer v-model="drawer" location="left" temporary>
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home" title="Home" to="/" />
-      <v-list-item prepend-icon="mdi-database" title="Kit DB" to="/db" />
+      <v-list-item prepend-icon="mdi-database" title="Kit DB" :to="{name: 'kit'}" />
       <v-list-item prepend-icon="mdi-information" title="About" to="/about" />
     </v-list>
   </v-navigation-drawer>
