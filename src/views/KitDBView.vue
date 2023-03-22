@@ -1,5 +1,5 @@
 <script setup>
-import Kits from '@/components/Kits.vue'
+import KitList from '@/components/Kits/KitList.vue'
 </script>
 
 <template>

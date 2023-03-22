@@ -1,7 +1,9 @@
 // plugins/vuetify.js
-import 'vuetify/styles'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import { createVuetify } from 'vuetify'
+import 'vuetify/styles'
+
+import '@fortawesome/fontawesome-free/css/all.css'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
 
 export default createVuetify({
   theme: {
@@ -9,9 +11,16 @@ export default createVuetify({
   },
   icons: {
     defaultSet: 'mdi',
+    iconfont: 'mdi',
     aliases,
     sets: {
-      mdi,
+      mdi
+    },
+    // github: {
+    //   component: FontAwesomeIcon,
+    //   props: {
+    //     icon: ["fab", "github"]
+    //   }
+    // }
   }
-}
 })

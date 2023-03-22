@@ -1,9 +1,9 @@
 <script setup>
 import RecentlyAddedKits from '@/components/Home/RecentlyAddedKits.vue'
-import SiteAnnouncements from '@/components/Home/SiteAnnouncements.vue';
+import RecentPosts from '@/components/Blog/RecentPosts.vue';
 </script>
 
 <template>
   <RecentlyAddedKits />
-  <SiteAnnouncements />
+  <RecentPosts />
 </template>

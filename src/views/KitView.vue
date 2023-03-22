@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import KitDetails from '@/components/KitDetails.vue'
-import Kits from '@/components/Kits.vue'
+import KitDetails from '@/components/Kits/KitDetails.vue'
+import Kits from '@/components/Kits/KitList.vue'
 
 let route = useRoute();
 </script>

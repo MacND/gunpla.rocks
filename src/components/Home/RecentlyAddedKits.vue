@@ -34,7 +34,7 @@ onMounted(() => {
           :to="{ name: 'kit', params: { id: kit.model_number } }">
         </v-list-item>
       </v-list>
-
+      
     </v-card>
   </v-container>
 </template>

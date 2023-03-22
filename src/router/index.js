@@ -4,9 +4,8 @@ import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import LoginView from '@/views/LoginView.vue'
 import AccountView from '@/views/AccountView.vue'
-// import KitDBView from '@/views/KitDBView.vue'
-// import KitDetailsView from '@/views/KitDetailsView.vue'
 import KitView from '@/views/KitView.vue'
+import BlogView from '@/views/BlogView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,14 +31,6 @@ const router = createRouter({
         titlePrefix: "About"
       }
     },
-    // {
-    //   path: '/db',
-    //   name: 'db',
-    //   component: KitDBView,
-    //   meta: {
-    //     titlePrefix: "KitDB"
-    //   }
-    // },
     {
       path: '/kit/:id?',
       name: 'kit',
@@ -62,6 +53,15 @@ const router = createRouter({
           return { name: 'login' }
         }
       },
+    },
+    {
+      path: '/blog/:id?',
+      name: 'blog',
+      component: BlogView,
+      params: true,
+      meta: {
+        titlePrefix: "Blog"
+      }
     }
   ]
 });

@@ -89,7 +89,9 @@ export default {
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home" title="Home" to="/" />
       <v-list-item prepend-icon="mdi-database" title="Kit DB" :to="{name: 'kit'}" />
+      <v-list-item prepend-icon="mdi-post" title="Blog" to="/blog" />
       <v-list-item prepend-icon="mdi-information" title="About" to="/about" />
+      <v-list-item prepend-icon="mdi-github" title="GitHub" target="_blank" href="https://github.com/macnd/gunpla.rocks" />
     </v-list>
   </v-navigation-drawer>
 </template>
