@@ -2,7 +2,7 @@
 import { supabase, getSession } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import placeholderImg from '@/assets/placeholder.jpg'
+import placeholderImg from '@/assets/massmech2@4x.png'
 
 const route = useRoute();
 const id = route.params.id;
@@ -10,15 +10,10 @@ const kit = ref();
 const images = ref();
 const url = new URL(route.path, window.location.origin).href
 const session = ref();
-// const collection = ref([]);
 
 session.value = async () => {
   await getSession();
 }
-
-// async function retrieveUserSession() {
-//   session.value = await getSession();
-// }
 
 async function getImages(modelNumber) {
   try {
@@ -39,7 +34,7 @@ async function getImages(modelNumber) {
 
     if (error) throw error
   } catch (error) {
-    console.log(error.message)
+    console.error(error.message)
   }
 }
 
@@ -57,7 +52,7 @@ async function getKitByID(kitID) {
     }
     if (error) throw error
   } catch (error) {
-    console.log(error.message)
+    console.error(error.message)
   }
 }
 
@@ -119,15 +114,7 @@ async function copyUrl(link) {
 
 <template>
   <v-container v-if="kit" class="d-flex flex-wrap justify-center">
-    <Teleport to="head">
-      <meta property="og:url" :content="url">
-      <meta property="og:title" :content="kit.title + ' - gunpla.rocks'">
-      <meta property="og:description" :content="kit.grade_series + ' ' + kit.title">
-      <meta property="og:image"
-        :content="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'">
-      <meta name="twitter:card" content="summary_large_image">
-    </Teleport>
-    <v-card class="justify-center" color="indigo-darken-1" variant="outlined">
+    <v-card class="justify-center pa-1" color="grey-darken-3">
       <v-card color="grey-darken-4">
         <div class="d-flex flex-wrap justify-start">
           <div>
@@ -147,7 +134,6 @@ async function copyUrl(link) {
               :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/' + image.name" />
           </v-carousel>
 
-
           <v-card class="ma-2 d-flex mt-auto" width="100%" color="grey-darken-3">
             <v-card-text>
               <p> {{ kit.grade }} {{ kit.scale }} Scale</p>
@@ -157,7 +143,6 @@ async function copyUrl(link) {
               <p> EAN: {{ kit.ean }} </p>
             </v-card-text>
           </v-card>
-
 
         </div>
         <v-card-actions class="mb-2">

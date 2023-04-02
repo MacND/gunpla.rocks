@@ -24,7 +24,7 @@ async function getBlogPostByID(id) {
     document.title = `${blogPost.value.title} - gunpla.rocks`
 
   } catch (error) {
-    console.log(error.message)
+    console.error(error.message)
   }
 }
 
@@ -43,10 +43,10 @@ onMounted(() => {
           </v-col>
           <v-col>
             <div>
-              <v-card-title>
+              <v-card-title class="">
                 {{ blogPost.title }}
               </v-card-title>
-              <v-card-subtitle class="text-wrap pb-2">
+              <v-card-subtitle class="text-wrap pb-2 mt-n3">
                 By {{ blogPost.full_name }}, {{ dayjs().to(dayjs(blogPost.created_at)) }}
               </v-card-subtitle>
             </div>
