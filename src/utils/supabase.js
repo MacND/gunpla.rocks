@@ -21,7 +21,7 @@ export const signOut = async() => {
     if (error) throw error
     router.push({name: "login"})
   } catch (error) {
-    console.error(error.message)
+    console.error(error)
   }
 }
 
@@ -31,10 +31,60 @@ export const getSession = async () => {
   return session
 }
 
-export const getUserData = async (session) => {
+export const getSelfCollection = async () => {
   try {
-    return await supabase.auth.getSession().session.user;
-  } catch {
-    console.log('Error while retrieving user data')
+    const session = await getSession();
+
+    const { data, error } = await supabase
+      .from('collections')
+      .select('*')
+      .eq('user_id', session.user.id);
+
+    if (error) throw error
+
+    return data
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const addKitToCollection = async (kitNumber) => {
+  try {
+    const { data, error } = await supabase
+      .from('collections')
+      .insert([
+        { model_number: kitNumber },
+      ])
+
+    if (error) throw error
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const insertExtendedProfileName = async (userID, Name) => {
+  try {
+    const { data, error } = await supabase.rpc('insert_profile_name', { userID: userID, Name: Name });
+    if (error) throw error
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getExtendedProfile = async () => {
+  try {
+    const session = await getSession();
+
+    const { data, error } = await supabase
+      .from('extended_profiles_view')
+      .select('*')
+      .eq('id', session.user.id)
+      .limit(1)
+
+    if (error) throw error
+
+    return data.pop()
+  } catch (error) {
+    console.error(error)
   }
 }

@@ -2,7 +2,7 @@
 
 # gunpla.rocks
 
-This template should help get you started developing with Vue 3 in Vite.
+A website for people to build their collection of Gunpla kits, post finished images of their kits, and share them with friends.  Powered by Vue 3, Vite, Vuetify, and Supabase.
 
 ## Recommended IDE Setup
 

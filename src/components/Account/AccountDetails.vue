@@ -1,40 +1,30 @@
 <script setup>
-import { supabase, getSession } from '@/utils/supabase'
-import { onMounted, ref, watch } from 'vue'
+import { getExtendedProfile } from '@/utils/supabase'
+import { onMounted, ref } from 'vue'
 import dayjs from 'dayjs';
+import { useAuthStore } from '@/stores/auth';
+import { useCollectionStore } from '@/stores/collection';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 dayjs.extend(LocalizedFormat);
 
-const session = ref({});
-const user = ref();
+const authStore = useAuthStore();
+const collectionStore = useCollectionStore();
+const userProfile = ref();
+
+const robotIcons = ['robot-angry', 'robot-confused', 'robot-dead', 'robot', 'robot-excited', 'robot-happy', 'robot-love']
 
 onMounted(async () => {
-  const retrievedSession = await getSession();
-  session.value = retrievedSession;
-  
-  if (session.value) {
-    user.value = JSON.parse(JSON.stringify(session.value.user))
-  }
-
-  supabase.auth.onAuthStateChange((_, _session) => {
-    session.value = _session
-  })
-});
-
-watch(() => session.value, (newUser) => {
-  if (newUser) {
-    user.value = newUser.user
-  } else {
-    user.value = ""
-  }
+  await authStore.getSession();
+  await collectionStore.getCollection();
+  userProfile.value = await getExtendedProfile();
 });
 </script>
 
 <script>
 export default {
   data: () => ({
-    drawer: false,
-    group: null
+    tab: null,
+    tabs: ['account', 'collection', 'posts']
   }),
   watch: {
     group() {
@@ -52,41 +42,86 @@ export default {
 
 <template>
   <v-container>
-    <v-card v-if="user" elevation="6" max-width="500" rounded class="pa-4 mx-auto text-center">
-      <v-avatar :image="user.user_metadata.avatar_url" size="128" class="ma-2"></v-avatar>
-      <h2 class="text-h5">{{ user.user_metadata.full_name }}</h2>
-      <h4 class="text-subtitle-1">{{ user.email }}</h4>
+    <v-card v-if="authStore.user" elevation="6" max-width="500" rounded class="pa-4 mx-auto text-center">
+      <v-avatar :image="authStore.user.user_metadata.avatar_url" size="128" class="ma-2"></v-avatar>
+      <h2 class="text-h5">Account Details</h2>
       <v-divider class="ma-2 mb-2" />
-      <v-list disabled density="compact" class="text-start">
-        <template v-for="identity in user.identities">
-          <v-list-subheader>{{ identity.provider[0].toUpperCase() + identity.provider.substring(1) }}</v-list-subheader>
-          <v-list-item>
-            <template v-slot:prepend>
-              <v-icon icon="mdi-email"/>
-            </template>
-            <v-list-item-title>Email Address</v-list-item-title>
-            <v-list-item-subtitle>{{ identity.identity_data.email }}</v-list-item-subtitle>
-          </v-list-item>
 
-          <v-list-item>
-            <template v-slot:prepend>
-              <v-icon icon="mdi-account"/>
-            </template>
-            <v-list-item-title>{{ identity.provider[0].toUpperCase() + identity.provider.substring(1) + ' Name' }}</v-list-item-title>
-            <v-list-item-subtitle>{{ identity.identity_data.name }}</v-list-item-subtitle>
-          </v-list-item>
+      <v-tabs v-model="tab">
+        <v-tab v-for="item in tabs" :key="item" :value="item">{{ item }}</v-tab>
+      </v-tabs>
 
-          <v-list-item>
-            <template v-slot:prepend>
-              <v-icon icon="mdi-clock-check"/>
+      <v-window v-model="tab">
+        <v-window-item value="account">
+          <v-list density="compact" class="text-start">
+            <template v-if="userProfile">
+              <v-list-subheader>Profile (Public)</v-list-subheader>
+              <v-list-item disabled>
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-account" />
+                </template>
+                <v-list-item-title>Name</v-list-item-title>
+                <v-list-item-subtitle>{{ userProfile.full_name }}</v-list-item-subtitle>
+              </v-list-item>
+
+              <v-list-item>
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-rename-box" />
+                </template>
+              <v-list-item-title>Profile Name</v-list-item-title>
+              <v-list-item-subtitle>{{ userProfile.profile_name ? userProfile.profile_name : 'Customisable profile name coming soon'
+              }}</v-list-item-subtitle>
+            </v-list-item>
+          </template>
+        </v-list>
+
+          <v-divider></v-divider>
+
+          <v-list disabled density="compact" class="text-start">
+            <template v-for="identity in authStore.user.identities">
+              <v-list-subheader>{{ identity.provider[0].toUpperCase() + identity.provider.substring(1)
+              }} (Private)</v-list-subheader>
+              <v-list-item>
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-account" />
+                </template>
+                <v-list-item-title>Username</v-list-item-title>
+                <v-list-item-subtitle>{{ identity.identity_data.name }}</v-list-item-subtitle>
+              </v-list-item>
+              <v-list-item>
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-email" />
+                </template>
+                <v-list-item-title>Email Address</v-list-item-title>
+                <v-list-item-subtitle>{{ identity.identity_data.email }}</v-list-item-subtitle>
+              </v-list-item>
+
             </template>
-            <v-list-item-title>Last signed in</v-list-item-title>
-            <v-list-item-subtitle>{{ formatDate(identity.last_sign_in_at) }}</v-list-item-subtitle>
-          </v-list-item>
-        </template>
-      </v-list>
-      <!-- <v-btn class="text-none" width="90">Logout</v-btn> -->
+          </v-list>
+        </v-window-item>
+
+        <v-window-item value="collection">
+          <v-list density="compact" class="text-start">
+            <template v-for="item in collectionStore.collection">
+            <v-list-item :to="{ name: 'kit', params: { id: item.model_number } }">
+                <template v-slot:prepend>
+                  <v-icon :icon="'mdi-' + robotIcons[Math.floor(Math.random()*robotIcons.length)]"></v-icon>
+                </template>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+                <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
+              </v-list-item>
+            </template>
+          </v-list>
+        </v-window-item>
+
+        <v-window-item value="posts">
+          <v-list density="compact" class="text-start">
+            <v-list-item>
+              <v-list-item-title>Coming Soon</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-window-item>
+      </v-window>
     </v-card>
-    <router-link to="/login"></router-link>
   </v-container>
 </template>

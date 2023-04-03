@@ -5,37 +5,38 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 dayjs.extend(relativeTime)
 
-const announcements = ref([]);
+const posts = ref([]);
 
-async function getSiteAnnouncements() {
+async function getRecentPosts() {
   const { data, error } = await supabase
-    .from('site_announcements')
+    .from('blog_posts_view')
     .select('*')
     .limit(3)
 
   if (error) throw error
 
-  announcements.value = data
+  posts.value = data
 }
 
 onMounted(() => {
-  getSiteAnnouncements();
+  getRecentPosts();
 })
 </script>
 
 <template>
   <v-container>
-    <v-card color="grey-darken-3" v-if="announcements">
+    <v-card color="grey-darken-3" v-if="posts">
       <v-list lines="one" density="compact" >
-        <v-list-subheader class="text-overline">Site Announcements</v-list-subheader>
+        <v-list-subheader class="text-overline">Recent Blog Posts</v-list-subheader>
       </v-list>
       <v-divider></v-divider>
       <v-list lines="two">
-        <v-list-item v-for="item in announcements"
-          :key="item.id" 
-          :title="item.title + ' - by ' + item.full_name + ', ' + dayjs().to(dayjs(item.created_at))"
-          :subtitle="item.body"
-          :prepend-avatar="item.avatar_url" >
+        <v-list-item v-for="post in posts"
+          :key="post.id" 
+          :title="post.title + ' - by ' + post.full_name"
+          :subtitle="dayjs().to(dayjs(post.created_at))"
+          :prepend-avatar="post.avatar_url" 
+          :to="{name: 'blog', params: { id: post.id } }" >
         </v-list-item>
       </v-list>
     </v-card>
