@@ -36,7 +36,7 @@ export const getSelfCollection = async () => {
     const session = await getSession();
 
     const { data, error } = await supabase
-      .from('collections')
+      .from('user_collection')
       .select('*')
       .eq('user_id', session.user.id);
 
