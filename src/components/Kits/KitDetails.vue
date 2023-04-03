@@ -8,34 +8,10 @@ const route = useRoute();
 const id = route.params.id;
 const kit = ref();
 const images = ref();
-const url = new URL(route.path, window.location.origin).href
 const session = ref();
 
 session.value = async () => {
   await getSession();
-}
-
-async function getImages(modelNumber) {
-  try {
-    const { data, error } = await supabase
-      .storage
-      .from('kit-images')
-      .list(modelNumber, {
-        limit: 20,
-        offset: 0,
-        sortBy: { column: 'name', order: 'asc' },
-      })
-
-    if (data) {
-      images.value = data.filter((obj) => {
-        return obj.name !== 'box-art.webp'
-      })
-    }
-
-    if (error) throw error
-  } catch (error) {
-    console.error(error.message)
-  }
 }
 
 async function getKitByID(kitID) {
@@ -51,44 +27,15 @@ async function getKitByID(kitID) {
       document.title = `${kit.value.grade_series} ${kit.value.title} - gunpla.rocks`
     }
     if (error) throw error
+
   } catch (error) {
     console.error(error.message)
   }
 }
 
-// async function getCollectionForUser() {
-//   const { data, error } = await supabase
-//   .from('collections')
-//   .select('*');
-
-//   if (data?.length > 0) {
-//     collection.value = data
-//   }
-// }
-
-// async function addKitToCollection(kitID) {
-//   try {
-//     const { data, error } = await supabase
-//       .from('collections')
-//       .insert(
-//         { 'kit_model_number': kitID }
-//       );
-//   } catch (error) {
-//     console.error(error.message)
-//     return false
-//   }
-
-//   if (data?.length > 0) {
-//     return true
-//   } 
-// }
-
 onMounted(() => {
   if (id) {
     getKitByID(id);
-    getImages(id);
-    // retrieveUserSession();
-    // getCollectionForUser();
   }
 });
 </script>
@@ -130,8 +77,8 @@ async function copyUrl(link) {
           <v-carousel class="ma-2" hide-delimiters>
             <v-carousel-item :lazy-src=placeholderImg
               :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'" />
-            <v-carousel-item v-for="image in images" :lazy-src=placeholderImg
-              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/' + image.name" />
+            <v-carousel-item v-for="image in kit.images" :lazy-src=placeholderImg
+              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + image" />
           </v-carousel>
 
           <v-card class="ma-2 d-flex mt-auto" width="100%" color="grey-darken-3">
