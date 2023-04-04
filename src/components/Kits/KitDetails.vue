@@ -2,7 +2,7 @@
 import { supabase, getSession } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import placeholderImg from '@/assets/massmech2@4x.png'
+import placeholderImg from '@/assets/massmech2@1x.png'
 import { useAuthStore } from '@/stores/auth';
 import { useCollectionStore } from '@/stores/collection';
 import { addKitToCollection } from '@/utils/supabase';
@@ -44,9 +44,7 @@ async function handleAddToCollection(kitNumber) {
 }
 
 onMounted(async () => {
-  // if (id) {
   await getKitByID(id);
-  // }
   await authStore.getSession();
   await collectionStore.getCollection();
 });
@@ -93,14 +91,41 @@ async function copyUrl(link) {
               :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + image" />
           </v-carousel>
 
-          <v-card class="ma-2 d-flex mt-auto" width="100%" color="grey-darken-3">
-            <v-card-text>
-              <p> {{ kit.grade }} {{ kit.scale }} Scale</p>
-              <p v-if="kit.series_number"> {{ kit.grade_series }} #{{ kit.series_number }} </p>
-              <p> Released: {{ kit.released_date }} </p>
-              <p> Bandai Model Number: {{ kit.model_number }} </p>
-              <p> EAN: {{ kit.ean }} </p>
-            </v-card-text>
+          <v-card class="ma-2 mt-auto" width="100%" color="grey-darken-3">
+            <v-table hover="true" density="comfortable">
+              <tbody>
+                <tr>
+                  <td>Grade Series</td>
+                  <td></td>
+                  <td>{{ kit.grade }} {{ kit?.line_name }}</td>
+                </tr>
+                <tr>
+                  <td>Scale</td>
+                  <td></td>
+                  <td>{{ kit.scale }}</td>
+                </tr>
+                <tr v-if="kit.series_number">
+                  <td>Series Number</td>
+                  <td></td>
+                  <td>#{{ kit.series_number }}</td>
+                </tr>
+                <tr>
+                  <td>Model Number</td>
+                  <td></td>
+                  <td>{{ kit.model_number }}</td>
+                </tr>
+                <tr>
+                  <td>Barcode</td>
+                  <td></td>
+                  <td>{{ kit.ean }}</td>
+                </tr>
+                <tr>
+                  <td>Release Date</td>
+                  <td></td>
+                  <td>{{ kit.released_date }}</td>
+                </tr>
+              </tbody>
+            </v-table>
           </v-card>
 
         </div>

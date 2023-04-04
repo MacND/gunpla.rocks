@@ -1,7 +1,7 @@
 <script setup>
 import { supabase } from '@/utils/supabase'
 import { onMounted, ref } from 'vue'
-import placeholderImg from '@/assets/massmech2@4x.png'
+import placeholderImg from '@/assets/massmech2@1x.png'
 import { useAuthStore } from '@/stores/auth';
 import { useCollectionStore } from '@/stores/collection';
 import { addKitToCollection } from '@/utils/supabase';
@@ -15,6 +15,7 @@ async function getKits() {
     const { data, error } = await supabase
       .from('kit_view')
       .select('*')
+      .order('id')
 
     if (error) throw error
     kits.value = data
@@ -37,6 +38,25 @@ onMounted(async () => {
   await authStore.getSession();
   await collectionStore.getCollection();
 })
+</script>
+
+<script>
+export default {
+  data: () => ({
+    show: false,
+    snackbar: false,
+    timeout: 2000
+  })
+}
+
+async function copyUrl(modelNumber) {
+  try {
+    const absoluteUrl = new URL(`/kits/${modelNumber}`, window.location.origin).href;
+    await navigator.clipboard.writeText(absoluteUrl);
+  } catch (err) {
+    console.error(err)
+  }
+}
 </script>
 
 <template>
@@ -83,7 +103,7 @@ onMounted(async () => {
                 </template>
               </template>
 
-              <v-btn icon="mdi-clipboard-list-outline" density="default" variant="tonal" />
+              <v-btn icon="mdi-clipboard-list-outline" density="default" variant="tonal" @click="copyUrl(kit.model_number); snackbar = true" />
 
               <v-tooltip text="Kit information" location="top">
                 <template v-slot:activator="{ props }">
@@ -96,6 +116,9 @@ onMounted(async () => {
         </v-card>
       </div>
     </v-container>
+    <v-snackbar v-model="snackbar" :timeout="timeout" elevation="24" color="success">
+          Link copied!
+        </v-snackbar>
   </v-responsive>
 </template>
 
