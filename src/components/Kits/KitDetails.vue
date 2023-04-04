@@ -3,16 +3,16 @@ import { supabase, getSession } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import placeholderImg from '@/assets/massmech2@4x.png'
+import { useAuthStore } from '@/stores/auth';
+import { useCollectionStore } from '@/stores/collection';
+import { addKitToCollection } from '@/utils/supabase';
 
 const route = useRoute();
 const id = route.params.id;
-const kit = ref();
-const images = ref();
-const session = ref();
+const authStore = useAuthStore();
+const collectionStore = useCollectionStore();
 
-session.value = async () => {
-  await getSession();
-}
+const kit = ref();
 
 async function getKitByID(kitID) {
   try {
@@ -22,21 +22,33 @@ async function getKitByID(kitID) {
       .eq('model_number', kitID)
       .limit(1);
 
+    if (error) throw error
+
     if (data.length > 0) {
       kit.value = await data.pop();
       document.title = `${kit.value.grade_series} ${kit.value.title} - gunpla.rocks`
     }
-    if (error) throw error
 
   } catch (error) {
     console.error(error.message)
   }
 }
 
-onMounted(() => {
-  if (id) {
-    getKitByID(id);
+async function handleAddToCollection(kitNumber) {
+  try {
+    await addKitToCollection(kitNumber)
+    await collectionStore.getCollection();
+  } catch (error) {
+    console.error(error)
   }
+}
+
+onMounted(async () => {
+  // if (id) {
+  await getKitByID(id);
+  // }
+  await authStore.getSession();
+  await collectionStore.getCollection();
 });
 </script>
 
@@ -93,11 +105,16 @@ async function copyUrl(link) {
 
         </div>
         <v-card-actions class="mb-2">
-          <!-- <v-tooltip v-if="session" text="Add to Collection" location="top">
-            <template v-slot:activator="{ props }">
-              <v-btn icon="mdi-plus" variant="tonal" v-bind="props" @click="addKitToCollection(kit.model_number)" />
+          <template v-if="authStore.session && collectionStore.collection">
+            <template v-if="(collectionStore.collection.filter(e => e.model_number === kit.model_number).length > 0)">
+              <v-btn prepend-icon="mdi-check-bold" variant="tonal" color="success">In Collection</v-btn>
             </template>
-          </v-tooltip> -->
+            
+            <template v-else>
+              <v-btn prepend-icon="mdi-plus" variant="tonal" @click="handleAddToCollection(kit.model_number)">Add to
+                Collection</v-btn>
+            </template>
+          </template>
           <v-btn prepend-icon="mdi-content-copy" variant="tonal" :to="{ name: 'kit', params: { id: kit.model_number } }"
             @click="copyUrl(route.path); snackbar = true">
             Copy Link

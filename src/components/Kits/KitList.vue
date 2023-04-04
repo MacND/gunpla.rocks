@@ -4,7 +4,7 @@ import { onMounted, ref } from 'vue'
 import placeholderImg from '@/assets/massmech2@4x.png'
 import { useAuthStore } from '@/stores/auth';
 import { useCollectionStore } from '@/stores/collection';
-import { addKitToCollection } from '../../utils/supabase';
+import { addKitToCollection } from '@/utils/supabase';
 
 const authStore = useAuthStore();
 const collectionStore = useCollectionStore();
