@@ -99,7 +99,7 @@ export default {
         <v-card>
           <div class="mx-auto text-center">
             <v-btn prepend-icon="mdi-account" :rounded="0" to="/account">
-              Account
+              My Account
             </v-btn>
             <v-divider />
             <v-btn prepend-icon="mdi-login" :rounded="0" @click="signOut()">

@@ -2,7 +2,7 @@
 import { supabase, getSession } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import placeholderImg from '@/assets/massmech2@1x.png'
+import placeholderImg from '@/assets/massmech2@0.25x.png'
 import { useAuthStore } from '@/stores/auth';
 import { useCollectionStore } from '@/stores/collection';
 import { addKitToCollection } from '@/utils/supabase';
@@ -71,6 +71,9 @@ async function copyUrl(link) {
 
 <template>
   <v-container v-if="kit" class="d-flex flex-wrap justify-center">
+    <div class="justify-left">
+      <v-breadcrumbs :items="[{ title: 'Kit', href: '/kit' }, { title: kit.title, href: `/kit/${kit.title}` }]"></v-breadcrumbs>
+
     <v-card class="justify-center pa-1" color="grey-darken-3">
       <v-card color="grey-darken-4">
         <div class="d-flex flex-wrap justify-start">
@@ -84,15 +87,26 @@ async function copyUrl(link) {
               <v-divider></v-divider>
             </v-card-subtitle>
           </div>
-          <v-carousel class="ma-2" hide-delimiters>
+
+          <v-carousel class="ma-2" hide-delimiters progress="indigo-accent-1" height="600px">
             <v-carousel-item :lazy-src=placeholderImg
-              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'" />
+              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'">
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular color="indigo-accent-1" indeterminate></v-progress-circular>
+                </div>
+              </template></v-carousel-item>
             <v-carousel-item v-for="image in kit.images" :lazy-src=placeholderImg
-              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + image" />
+              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + image">
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular color="indigo-accent-1" indeterminate></v-progress-circular>
+                </div>
+              </template></v-carousel-item>
           </v-carousel>
 
           <v-card class="ma-2 mt-auto" width="100%" color="grey-darken-3">
-            <v-table hover="true" density="comfortable">
+            <v-table :hover=true density="comfortable">
               <tbody>
                 <tr>
                   <td>Grade Series</td>
@@ -134,7 +148,7 @@ async function copyUrl(link) {
             <template v-if="(collectionStore.collection.filter(e => e.model_number === kit.model_number).length > 0)">
               <v-btn prepend-icon="mdi-check-bold" variant="tonal" color="success">In Collection</v-btn>
             </template>
-            
+
             <template v-else>
               <v-btn prepend-icon="mdi-plus" variant="tonal" @click="handleAddToCollection(kit.model_number)">Add to
                 Collection</v-btn>
@@ -150,6 +164,7 @@ async function copyUrl(link) {
         </v-snackbar>
       </v-card>
     </v-card>
+  </div>
   </v-container>
 </template>
 
