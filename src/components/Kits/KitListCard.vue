@@ -75,13 +75,13 @@ export default {
         </v-card-subtitle>
       </div>
 
-      <v-card-actions class="mt-auto" @click.prevent.stop>
+      <v-card-actions class="mt-auto">
         <template v-if="authStore.session && collectionStore.collection">
           <template v-if="(collectionStore.collection.filter(e => e.model_number === props.kit.model_number).length > 0)">
             <v-tooltip text="Remove from Collection" location="top">
               <template v-slot:activator="{ props }">
                 <v-btn icon="mdi-check-bold" variant="tonal" color="success" v-bind="props"
-                  @click="handleRemoveFromCollection(kit.model_number)" @click.prevent.self />
+                @click.prevent="handleRemoveFromCollection(kit.model_number)" />
               </template>
             </v-tooltip>
           </template>
@@ -89,8 +89,8 @@ export default {
           <template v-else>
             <v-tooltip text="Add to Collection" location="top">
               <template v-slot:activator="{ props }">
-                <v-btn icon="mdi-plus" variant="tonal" v-bind="props" @click="handleAddToCollection(kit.model_number)"
-                  @click.prevent.self />
+                <v-btn icon="mdi-plus" variant="tonal" v-bind="props"
+                @click.prevent="handleAddToCollection(kit.model_number)" />
               </template>
             </v-tooltip>
           </template>
@@ -99,7 +99,7 @@ export default {
         <v-tooltip text="Copy Link" location="top">
           <template v-slot:activator="{ props }">
             <v-btn icon="mdi-clipboard-list-outline" v-bind="props" density="default" variant="tonal"
-              @click="copyUrl(kit.model_number); snackbar = true" @click.prevent.self />
+              @click.prevent="copyUrl(kit.model_number); snackbar = true" />
           </template>
         </v-tooltip>
       </v-card-actions>
