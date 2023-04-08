@@ -46,7 +46,7 @@ async function handleAddToCollection(kitNumber) {
 onMounted(async () => {
   await getKitByID(id);
   await authStore.getSession();
-  await collectionStore.getCollection();
+  await collectionStore.getCollection(authStore.session);
 });
 </script>
 
@@ -72,7 +72,7 @@ async function copyUrl(link) {
 <template>
   <v-container v-if="kit" class="d-flex flex-wrap justify-center">
     <div class="justify-left">
-      <v-breadcrumbs :items="[{ title: 'Kit', href: '/kit' }, { title: kit.title, href: `/kit/${kit.title}` }]"></v-breadcrumbs>
+      <v-breadcrumbs :items="[{ title: 'Kit DB', href: '/kit' }, { title: kit.title, href: `/kit/${kit.title}` }]"></v-breadcrumbs>
 
     <v-card class="justify-center pa-1" color="grey-darken-3">
       <v-card color="grey-darken-4">

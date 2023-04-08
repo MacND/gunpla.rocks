@@ -1,6 +1,6 @@
 <script setup>
-import { supabase, getSession, signOut } from '@/utils/supabase'
-import { onMounted, ref, watch } from 'vue'
+import { supabase, signOut } from '@/utils/supabase'
+import { onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();

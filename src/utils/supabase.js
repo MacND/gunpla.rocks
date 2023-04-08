@@ -48,6 +48,19 @@ export const getSelfCollection = async () => {
   }
 }
 
+export const removeKitFromCollection = async (kitNumber) => {
+  try {
+    const { data, error } = await supabase
+      .from('collections')
+      .delete()
+      .eq('model_number', kitNumber)
+
+    if (error) throw error
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const addKitToCollection = async (kitNumber) => {
   try {
     const { data, error } = await supabase
