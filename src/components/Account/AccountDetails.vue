@@ -1,5 +1,5 @@
 <script setup>
-import { getExtendedProfile } from '@/utils/supabase'
+import { getSelfProfile } from '@/utils/supabase'
 import { onMounted, ref } from 'vue'
 import dayjs from 'dayjs';
 import { useAuthStore } from '@/stores/auth';
@@ -11,12 +11,10 @@ const authStore = useAuthStore();
 const collectionStore = useCollectionStore();
 const userProfile = ref();
 
-const robotIcons = ['robot-angry', 'robot-confused', 'robot-dead', 'robot', 'robot-excited', 'robot-happy', 'robot-love']
-
 onMounted(async () => {
   await authStore.getSession();
   await collectionStore.getCollection();
-  userProfile.value = await getExtendedProfile();
+  userProfile.value = await getSelfProfile();
 });
 </script>
 
@@ -24,7 +22,7 @@ onMounted(async () => {
 export default {
   data: () => ({
     tab: null,
-    tabs: ['account', 'collection', 'posts']
+    tabs: ['account', 'posts']
   }),
   watch: {
     group() {
@@ -43,7 +41,7 @@ export default {
 <template>
   <v-container>
     <v-card v-if="authStore.user" elevation="6" max-width="500" rounded class="pa-4 mx-auto text-center">
-      <v-avatar :image="authStore.user.user_metadata.avatar_url" size="128" class="ma-2"></v-avatar>
+      <v-avatar :image="authStore.user.user_metadata.avatar_url" size="128" class="ma-2" ></v-avatar>
       <h2 class="text-h5">Account Details</h2>
       <v-divider class="ma-2 mb-2" />
 
@@ -64,13 +62,12 @@ export default {
                 <v-list-item-subtitle>{{ userProfile.full_name }}</v-list-item-subtitle>
               </v-list-item>
 
-              <v-list-item>
+              <v-list-item :to="{ name: 'collection', params: { username: userProfile.username } }">
                 <template v-slot:prepend>
                   <v-icon icon="mdi-rename-box" />
                 </template>
-              <v-list-item-title>Profile Name</v-list-item-title>
-              <v-list-item-subtitle>{{ userProfile.profile_name ? userProfile.profile_name : 'Customisable profile name coming soon'
-              }}</v-list-item-subtitle>
+              <v-list-item-title >Profile Name</v-list-item-title>
+              <v-list-item-subtitle >{{ userProfile.username }}</v-list-item-subtitle>
             </v-list-item>
           </template>
         </v-list>
@@ -95,12 +92,19 @@ export default {
                 <v-list-item-title>Email Address</v-list-item-title>
                 <v-list-item-subtitle>{{ identity.identity_data.email }}</v-list-item-subtitle>
               </v-list-item>
+              <v-list-item>
+                <template v-slot:prepend>
+                  <v-icon icon="mdi-identifier" />
+                </template>
+                <v-list-item-title>User ID</v-list-item-title>
+                <v-list-item-subtitle>{{ identity.identity_data.sub }}</v-list-item-subtitle>
+              </v-list-item>
 
             </template>
           </v-list>
         </v-window-item>
 
-        <v-window-item value="collection">
+        <!-- <v-window-item value="collection">
           <v-list density="compact" class="text-start">
             <template v-for="item in collectionStore.collection">
             <v-list-item :to="{ name: 'kit', params: { id: item.model_number } }">
@@ -112,7 +116,7 @@ export default {
               </v-list-item>
             </template>
           </v-list>
-        </v-window-item>
+        </v-window-item> -->
 
         <v-window-item value="posts">
           <v-list density="compact" class="text-start">

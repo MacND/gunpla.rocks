@@ -91,18 +91,22 @@ export default {
       <v-menu location="bottom">
         <template v-slot:activator="{ props }">
           <v-btn icon v-if="authStore.session" v-bind="props">
-            <v-avatar :image="authStore.session.user.user_metadata.avatar_url" size="42"></v-avatar>
+            <v-avatar :image="authStore.session.user.user_metadata.avatar_url" size="42" ></v-avatar>
           </v-btn>
           <v-btn v-else prepend-icon="mdi-login" to="/login">Login</v-btn>
         </template>
 
         <v-card>
           <div class="mx-auto text-center">
-            <v-btn prepend-icon="mdi-account" :rounded="0" to="/account">
-              My Account
+            <v-btn prepend-icon="mdi-account" :rounded="0" width="100%" to="/account">
+              Account
             </v-btn>
             <v-divider />
-            <v-btn prepend-icon="mdi-login" :rounded="0" @click="signOut()">
+            <v-btn prepend-icon="mdi-treasure-chest" :rounded="0" width="100%" to="/collection">
+              Collection
+            </v-btn>
+            <v-divider />
+            <v-btn prepend-icon="mdi-login" :rounded="0" width="100%" @click="signOut()">
               Logout
             </v-btn>
           </div>

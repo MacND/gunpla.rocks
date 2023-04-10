@@ -5,6 +5,7 @@ import LoginView from '@/views/LoginView.vue'
 import AccountView from '@/views/AccountView.vue'
 import KitView from '@/views/KitView.vue'
 import BlogView from '@/views/BlogView.vue'
+import CollectionView from '@/views/CollectionView.vue'
 import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
@@ -56,6 +57,15 @@ const router = createRouter({
       params: true,
       meta: {
         titlePrefix: "Blog"
+      }
+    },
+    {
+      path: '/collection/:username?',
+      name: 'collection',
+      component: CollectionView,
+      params: true,
+      meta: {
+        titlePrefix: "Collection"
       }
     }
   ]

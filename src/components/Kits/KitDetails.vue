@@ -1,11 +1,10 @@
 <script setup>
-import { supabase, getSession } from '@/utils/supabase'
+import { supabase, getSession, addKitToCollection } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import placeholderImg from '@/assets/massmech2@0.25x.png'
 import { useAuthStore } from '@/stores/auth';
 import { useCollectionStore } from '@/stores/collection';
-import { addKitToCollection } from '@/utils/supabase';
 
 const route = useRoute();
 const id = route.params.id;
@@ -46,7 +45,7 @@ async function handleAddToCollection(kitNumber) {
 onMounted(async () => {
   await getKitByID(id);
   await authStore.getSession();
-  await collectionStore.getCollection(authStore.session);
+  await collectionStore.getCollection();
 });
 </script>
 

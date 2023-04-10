@@ -10,10 +10,8 @@ export const useCollectionStore = defineStore("collection", {
   },
   actions: {
     async getCollection() {
-
-        const userCollection = await getSelfCollection();
-        this.currentCollection = userCollection
-
+      const userCollection = await getSelfCollection();
+      this.currentCollection = userCollection
     }
   }
 })
