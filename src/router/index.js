@@ -3,9 +3,11 @@ import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import LoginView from '@/views/LoginView.vue'
 import AccountView from '@/views/AccountView.vue'
-import KitView from '@/views/KitView.vue'
+import KitDetailsView from '@/views/KitDetailsView.vue'
+import KitDBView from '@/views/KitDBView.vue'
 import BlogView from '@/views/BlogView.vue'
 import CollectionView from '@/views/CollectionView.vue'
+import ErrorView from '@/views/ErrorView.vue'
 import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
@@ -33,9 +35,17 @@ const router = createRouter({
       }
     },
     {
-      path: '/kit/:id?',
+      path: '/db',
+      name: 'db',
+      component: KitDBView,
+      meta: {
+        titlePrefix: "Kit DB"
+      }
+    },
+    {
+      path: '/kit/:id',
       name: 'kit',
-      component: KitView,
+      component: KitDetailsView,
       params: true,
       meta: {
         titlePrefix: "Kit"
@@ -66,6 +76,13 @@ const router = createRouter({
       params: true,
       meta: {
         titlePrefix: "Collection"
+      }
+    },
+    { 
+      path: "/:catchAll(.*)", 
+      component: ErrorView,
+      meta: {
+        titlePrefix: "Error"
       }
     }
   ]

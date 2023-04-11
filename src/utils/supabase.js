@@ -26,6 +26,21 @@ export const signOut = async() => {
   }
 }
 
+export const getUserProfile = async (userID) => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userID);
+  
+    if (error) throw error
+
+    return data.pop()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const getSession = async () => {
   try {
     const { data, error } = await supabase.auth.getSession()

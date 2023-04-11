@@ -1,11 +1,10 @@
 <script setup>
 import { useRoute } from 'vue-router'
-import KitDetails from '@/components/Kits/KitDetails.vue'
+import KitList from '@/components/Kits/KitList.vue'
 
 let route = useRoute();
-
 </script>
 
 <template>
-  <KitDetails :key="$route.params.id"/>
+  <KitList />
 </template>

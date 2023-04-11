@@ -25,7 +25,6 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <v-breadcrumbs :items="[{ title: 'Blog', href: '/blog' }]"></v-breadcrumbs>
     <v-card color="grey-darken-3" v-if="posts">
       <v-list lines="one" density="compact" >
         <v-list-subheader class="text-overline">Recent Blog Posts</v-list-subheader>

@@ -36,23 +36,22 @@ async function handleRemoveFromCollection(kitNumber) {
   }
 }
 
-onMounted(async () => {
-  await authStore.getSession();
-})
+// onMounted(async () => {
+//   await authStore.getSession();
+// })
 </script>
 
 <script>
 export default {
   data: () => ({
     snackbar: false,
-    timeout: 2000
+    timeout: 1000
   })
 }
-
 </script>
 
 <template>
-  <v-card :key="props.kit.model_number" color="grey-darken-3" :id="props.kit.model_number" class="pa-1 ma-1" width="400px"
+  <v-card :key="props.kit.model_number" color="grey-darken-3" :id="props.kit.model_number" class="pa-1 ma-1" width="100%" max-width="400px"
     :to="{ name: 'kit', params: { id: props.kit.model_number } }">
     <v-card class="mt-auto d-flex flex-column" width="100%" height="100%" color="grey-darken-4">
       <v-img

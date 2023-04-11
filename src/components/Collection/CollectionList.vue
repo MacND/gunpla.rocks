@@ -1,5 +1,5 @@
 <script setup>
-import { supabase, getSession, getUser, getCollectionForUser } from '@/utils/supabase'
+import { getUser, getCollectionForUser } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth';
@@ -40,6 +40,15 @@ onMounted(async () => {
 });
 </script>
 
+<script>
+export default {
+  data: () => ({
+    snackbar: false,
+    timeout: 1000
+  })
+}
+</script>
+
 <template>
   <v-responsive width="100%">
     <v-container class="d-flex flex-wrap justify-center">
@@ -48,16 +57,23 @@ onMounted(async () => {
           <template v-if="userDetails">
             <v-avatar :image="userDetails.avatar_url" size="48" class="mt-2" />
             <div class="text-h4 pa-2 text-center">{{ userDetails.full_name }}'s Collection</div>
+            <v-btn prepend-icon="mdi-content-copy" variant="tonal" class="mb-2"
+              @click="copyUrl(route.path); snackbar = true">
+              Copy Link
+            </v-btn>
           </template>
+          
           <template v-else-if="authStore.user">
             <v-avatar :image="authStore.user.user_metadata.avatar_url" size="48"  class="mt-2" />
             <div class="text-h4 pa-2 text-center">My Collection</div>
+            <v-btn prepend-icon="mdi-content-copy" variant="tonal" class="mb-2"
+              @click="copyUrl(route.path + '/' + authStore.user.userProfile.username); snackbar = true">
+              Copy Link
+            </v-btn>
           </template>
-          <v-btn prepend-icon="mdi-content-copy" variant="tonal" class="mb-2"
-            @click="copyUrl(route.path); snackbar = true">
-            Copy Link
-          </v-btn>
+          
         </template>
+
         <template v-else>
           <v-card-title>No user specified, and no user logged in.</v-card-title>
         </template>
@@ -71,8 +87,9 @@ onMounted(async () => {
           <KitListCard :kit="kit"></KitListCard>
         </template>
       </div>
-
-
+      <v-snackbar v-model="snackbar" :timeout="timeout" elevation="24" color="success">
+    Link copied!
+  </v-snackbar>
     </v-container>
   </v-responsive>
 </template>
