@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getSession, supabase } from '@/utils/supabase'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import LoginView from '@/views/LoginView.vue'
 import AccountView from '@/views/AccountView.vue'
-import KitView from '@/views/KitView.vue'
+import KitDetailsView from '@/views/KitDetailsView.vue'
+import KitDBView from '@/views/KitDBView.vue'
 import BlogView from '@/views/BlogView.vue'
+import CollectionView from '@/views/CollectionView.vue'
+import ErrorView from '@/views/ErrorView.vue'
+import { useAuthStore } from '@/stores/auth';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,9 +36,17 @@ const router = createRouter({
       }
     },
     {
-      path: '/kit/:id?',
+      path: '/db',
+      name: 'db',
+      component: KitDBView,
+      meta: {
+        titlePrefix: "Kit DB"
+      }
+    },
+    {
+      path: '/kit/:id',
       name: 'kit',
-      component: KitView,
+      component: KitDetailsView,
       params: true,
       meta: {
         titlePrefix: "Kit"
@@ -45,14 +57,11 @@ const router = createRouter({
       name: 'account',
       component: AccountView,
       meta: {
-        titlePrefix: 'Account'
-      },
-      beforeEnter: async (to, from) => {
-        const retrievedSession = await getSession();
-        if (!retrievedSession) {
-          return { name: 'login' }
-        }
-      },
+
+        titlePrefix: 'Account',
+        requiresAuth: true
+      }
+
     },
     {
       path: '/blog/:id?',
@@ -62,9 +71,34 @@ const router = createRouter({
       meta: {
         titlePrefix: "Blog"
       }
+
+    },
+    {
+      path: '/collection/:username?',
+      name: 'collection',
+      component: CollectionView,
+      params: true,
+      meta: {
+        titlePrefix: "Collection"
+      }
+    },
+    { 
+      path: "/:catchAll(.*)", 
+      component: ErrorView,
+      meta: {
+        titlePrefix: "Error"
+      }
+
     }
   ]
 });
+
+router.beforeEach((to) => {
+  // Check if route requires auth
+  const authStore = useAuthStore();
+
+  if (to.meta.requiresAuth && !authStore.session) return '/login'
+})
 
 router.beforeEach((to, from, next) => {
   // Get the page title from the route meta data that we have defined

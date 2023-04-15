@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
-import { supabase } from '@/utils/supabase'
+
+import { supabase, getUserProfile } from '@/utils/supabase'
+
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -12,9 +14,22 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     async getSession() {
-      const { data, error } = await supabase.auth.getSession()
-      this.currentSession = data.session
-      this.currentUser = data.session?.user
+
+      try {
+        const { data, error } = await supabase.auth.getSession()
+        
+        if (error) throw error
+ 
+        if (data.session) {
+          this.currentSession = data.session
+          this.currentUser = data.session?.user
+          this.currentUser.userProfile = await getUserProfile(data.session?.user?.id)
+        }
+    
+      } catch (error) {
+        console.error(error)
+      }
+
     }
   }
 })

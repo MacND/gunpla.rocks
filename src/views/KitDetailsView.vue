@@ -7,7 +7,7 @@ let route = useRoute();
 </script>
 
 <template>
-  <Suspense>
-    <KitDetails :key="$route.params.id"/>
-  </Suspense>
+
+  <KitDetails :key="$route.params.id"/>
+
 </template>

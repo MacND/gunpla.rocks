@@ -35,7 +35,11 @@ onMounted(() => {
 
 <template>
   <v-container v-if="blogPost" class="d-flex flex-wrap justify-center">
-    <v-card class="justify-center" color="indigo-darken-1" variant="outlined">
+
+    <div class="justify-left">
+    <v-breadcrumbs :items="[{ title: 'Blog', href: '/blog' }, { title: blogPost.title, href: `/blog/${blogPost.id}` }]"></v-breadcrumbs>
+    <v-card class="justify-left" color="indigo-darken-1" variant="outlined" width="600px">
+
       <v-card color="grey-darken-4">
         <v-row no-gutters>
           <v-col cols="1" flex-column align-self="center" class="d-flex justify-center pl-4">
@@ -58,5 +62,8 @@ onMounted(() => {
         </v-card-text>
       </v-card>
     </v-card>
+
+    </div>
+
   </v-container>
 </template>

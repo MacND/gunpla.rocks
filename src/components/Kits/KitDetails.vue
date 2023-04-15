@@ -1,42 +1,18 @@
 <script setup>
-import { supabase, getSession } from '@/utils/supabase'
+
+import { supabase, getSession, addKitToCollection } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
-import placeholderImg from '@/assets/massmech2@4x.png'
+import placeholderImg from '@/assets/massmech2@0.25x.png'
+import { useAuthStore } from '@/stores/auth';
+import { useCollectionStore } from '@/stores/collection';
 
 const route = useRoute();
 const id = route.params.id;
+const authStore = useAuthStore();
+const collectionStore = useCollectionStore();
+
 const kit = ref();
-const images = ref();
-const url = new URL(route.path, window.location.origin).href
-const session = ref();
-
-session.value = async () => {
-  await getSession();
-}
-
-async function getImages(modelNumber) {
-  try {
-    const { data, error } = await supabase
-      .storage
-      .from('kit-images')
-      .list(modelNumber, {
-        limit: 20,
-        offset: 0,
-        sortBy: { column: 'name', order: 'asc' },
-      })
-
-    if (data) {
-      images.value = data.filter((obj) => {
-        return obj.name !== 'box-art.webp'
-      })
-    }
-
-    if (error) throw error
-  } catch (error) {
-    console.error(error.message)
-  }
-}
 
 async function getKitByID(kitID) {
   try {
@@ -46,50 +22,33 @@ async function getKitByID(kitID) {
       .eq('model_number', kitID)
       .limit(1);
 
+    if (error) throw error
+
     if (data.length > 0) {
       kit.value = await data.pop();
       document.title = `${kit.value.grade_series} ${kit.value.title} - gunpla.rocks`
     }
-    if (error) throw error
+
   } catch (error) {
     console.error(error.message)
   }
 }
 
-// async function getCollectionForUser() {
-//   const { data, error } = await supabase
-//   .from('collections')
-//   .select('*');
 
-//   if (data?.length > 0) {
-//     collection.value = data
-//   }
-// }
-
-// async function addKitToCollection(kitID) {
-//   try {
-//     const { data, error } = await supabase
-//       .from('collections')
-//       .insert(
-//         { 'kit_model_number': kitID }
-//       );
-//   } catch (error) {
-//     console.error(error.message)
-//     return false
-//   }
-
-//   if (data?.length > 0) {
-//     return true
-//   } 
-// }
-
-onMounted(() => {
-  if (id) {
-    getKitByID(id);
-    getImages(id);
-    // retrieveUserSession();
-    // getCollectionForUser();
+async function handleAddToCollection(kitNumber) {
+  try {
+    await addKitToCollection(kitNumber)
+    await collectionStore.getCollection();
+  } catch (error) {
+    console.error(error)
   }
+}
+
+onMounted(async () => {
+  await getKitByID(id);
+  await authStore.getSession();
+  await collectionStore.getCollection();
+
 });
 </script>
 
@@ -98,7 +57,9 @@ export default {
   data: () => ({
     show: false,
     snackbar: false,
-    timeout: 2000
+
+    timeout: 1000
+
   })
 }
 
@@ -114,6 +75,11 @@ async function copyUrl(link) {
 
 <template>
   <v-container v-if="kit" class="d-flex flex-wrap justify-center">
+
+    <div class="justify-left">
+      <v-breadcrumbs :items="[{ title: 'Kit DB', href: '/db' }, { title: kit.title, href: `/kit/${kit.title}` }]"></v-breadcrumbs>
+
+
     <v-card class="justify-center pa-1" color="grey-darken-3">
       <v-card color="grey-darken-4">
         <div class="d-flex flex-wrap justify-start">
@@ -127,30 +93,76 @@ async function copyUrl(link) {
               <v-divider></v-divider>
             </v-card-subtitle>
           </div>
-          <v-carousel class="ma-2" hide-delimiters>
+
+          <v-carousel class="ma-2" hide-delimiters progress="indigo-accent-1" height="600px">
             <v-carousel-item :lazy-src=placeholderImg
-              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'" />
-            <v-carousel-item v-for="image in images" :lazy-src=placeholderImg
-              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/' + image.name" />
+              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + kit.model_number + '/box-art.webp'">
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular color="indigo-accent-1" indeterminate></v-progress-circular>
+                </div>
+              </template></v-carousel-item>
+            <v-carousel-item v-for="image in kit.images" :lazy-src=placeholderImg
+              :src="'https://hltytqzmvibmibifzerx.supabase.co/storage/v1/object/public/kit-images/' + image">
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-progress-circular color="indigo-accent-1" indeterminate></v-progress-circular>
+                </div>
+              </template></v-carousel-item>
           </v-carousel>
 
-          <v-card class="ma-2 d-flex mt-auto" width="100%" color="grey-darken-3">
-            <v-card-text>
-              <p> {{ kit.grade }} {{ kit.scale }} Scale</p>
-              <p v-if="kit.series_number"> {{ kit.grade_series }} #{{ kit.series_number }} </p>
-              <p> Released: {{ kit.released_date }} </p>
-              <p> Bandai Model Number: {{ kit.model_number }} </p>
-              <p> EAN: {{ kit.ean }} </p>
-            </v-card-text>
+          <v-card class="ma-2 mt-auto" width="100%" color="grey-darken-3">
+            <v-table :hover=true density="comfortable">
+              <tbody>
+                <tr>
+                  <td>Grade Series</td>
+                  <td></td>
+                  <td>{{ kit.grade }} {{ kit?.line_name }}</td>
+                </tr>
+                <tr>
+                  <td>Scale</td>
+                  <td></td>
+                  <td>{{ kit.scale }}</td>
+                </tr>
+                <tr v-if="kit.series_number">
+                  <td>Series Number</td>
+                  <td></td>
+                  <td>#{{ kit.series_number }}</td>
+                </tr>
+                <tr>
+                  <td>Model Number</td>
+                  <td></td>
+                  <td>{{ kit.model_number }}</td>
+                </tr>
+                <tr>
+                  <td>Barcode</td>
+                  <td></td>
+                  <td>{{ kit.ean }}</td>
+                </tr>
+                <tr>
+                  <td>Release Date</td>
+                  <td></td>
+                  <td>{{ kit.released_date }}</td>
+                </tr>
+              </tbody>
+            </v-table>
+
           </v-card>
 
         </div>
         <v-card-actions class="mb-2">
-          <!-- <v-tooltip v-if="session" text="Add to Collection" location="top">
-            <template v-slot:activator="{ props }">
-              <v-btn icon="mdi-plus" variant="tonal" v-bind="props" @click="addKitToCollection(kit.model_number)" />
+
+          <template v-if="authStore.session && collectionStore.collection">
+            <template v-if="(collectionStore.collection.filter(e => e.model_number === kit.model_number).length > 0)">
+              <v-btn prepend-icon="mdi-check-bold" variant="tonal" color="success">In Collection</v-btn>
             </template>
-          </v-tooltip> -->
+
+            <template v-else>
+              <v-btn prepend-icon="mdi-plus" variant="tonal" @click="handleAddToCollection(kit.model_number)">Add to
+                Collection</v-btn>
+            </template>
+          </template>
+
           <v-btn prepend-icon="mdi-content-copy" variant="tonal" :to="{ name: 'kit', params: { id: kit.model_number } }"
             @click="copyUrl(route.path); snackbar = true">
             Copy Link
@@ -161,6 +173,9 @@ async function copyUrl(link) {
         </v-snackbar>
       </v-card>
     </v-card>
+
+  </div>
+
   </v-container>
 </template>
 

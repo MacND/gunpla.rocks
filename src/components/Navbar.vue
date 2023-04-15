@@ -1,6 +1,8 @@
 <script setup>
-import { supabase, getSession, signOut } from '@/utils/supabase'
-import { onMounted, ref, watch } from 'vue'
+
+import { supabase, signOut } from '@/utils/supabase'
+import { onMounted, ref } from 'vue'
+
 import { useAuthStore } from '@/stores/auth';
 
 const authStore = useAuthStore();
@@ -91,18 +93,24 @@ export default {
       <v-menu location="bottom">
         <template v-slot:activator="{ props }">
           <v-btn icon v-if="authStore.session" v-bind="props">
-            <v-avatar :image="authStore.session.user.user_metadata.avatar_url" size="42"></v-avatar>
+
+            <v-avatar :image="authStore.session.user.user_metadata.avatar_url" size="42" ></v-avatar>
+
           </v-btn>
           <v-btn v-else prepend-icon="mdi-login" to="/login">Login</v-btn>
         </template>
 
         <v-card>
           <div class="mx-auto text-center">
-            <v-btn prepend-icon="mdi-account" :rounded="0" to="/account">
+            <v-btn prepend-icon="mdi-account" :rounded="0" width="100%" to="/account">
               Account
             </v-btn>
             <v-divider />
-            <v-btn prepend-icon="mdi-login" :rounded="0" @click="signOut()">
+            <v-btn prepend-icon="mdi-treasure-chest" :rounded="0" width="100%" to="/collection">
+              Collection
+            </v-btn>
+            <v-divider />
+            <v-btn prepend-icon="mdi-login" :rounded="0" width="100%" @click="signOut()">
               Logout
             </v-btn>
           </div>
@@ -114,7 +122,9 @@ export default {
   <v-navigation-drawer v-model="drawer" location="left" temporary>
     <v-list density="compact" nav>
       <v-list-item prepend-icon="mdi-home" title="Home" to="/" />
-      <v-list-item prepend-icon="mdi-database" title="Kit DB" :to="{name: 'kit'}" />
+
+      <v-list-item prepend-icon="mdi-database" title="Kit DB" :to="{name: 'db'}" />
+
       <v-list-item prepend-icon="mdi-post" title="Blog" to="/blog" />
       <v-list-item prepend-icon="mdi-information" title="About" to="/about" />
       <v-list-item prepend-icon="mdi-github" title="GitHub" target="_blank" href="https://github.com/macnd/gunpla.rocks" />

@@ -22,27 +22,90 @@ export const signOut = async() => {
     router.push({name: "login"})
   } catch (error) {
     console.error(error)
+
+  }
+}
+
+export const getUserID = async (username) => {
+  try {
+    const { data, error } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('username', username);
+
+    if (error) throw error
+
+    return data.pop().id
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getUserProfile = async (userID) => {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userID);
+  
+    if (error) throw error
+
+    return data.pop()
+  } catch (error) {
+    console.error(error)
+
   }
 }
 
 export const getSession = async () => {
-  const { data, error } = await supabase.auth.getSession()
-  const { session, user } = data
-  return session
+  try {
+    const { data, error } = await supabase.auth.getSession()
+
+    if (error) throw error
+    
+    if (data) {
+      const { session } = data
+      return session
+    }
+
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export const getSelfCollection = async () => {
   try {
     const session = await getSession();
 
+    if (session) {
+      const { data, error } = await supabase
+        .from('user_collection')
+        .select('*')
+        .eq('user_id', session.user.id);
+
+      if (error) throw error
+
+      return data
+    }
+
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+
+export const getCollectionForUser = async (userID) => {
+  try {
+
     const { data, error } = await supabase
-      .from('collections')
+      .from('user_collection')
       .select('*')
-      .eq('user_id', session.user.id);
+      .eq('user_id', userID);
 
     if (error) throw error
 
     return data
+
   } catch (error) {
     console.error(error)
   }
@@ -62,6 +125,19 @@ export const addKitToCollection = async (kitNumber) => {
   }
 }
 
+export const removeKitFromCollection = async (kitNumber) => {
+  try {
+    const { data, error } = await supabase
+      .from('collections')
+      .delete()
+      .eq('model_number', kitNumber)
+
+    if (error) throw error
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export const insertExtendedProfileName = async (userID, Name) => {
   try {
     const { data, error } = await supabase.rpc('insert_profile_name', { userID: userID, Name: Name });
@@ -71,12 +147,15 @@ export const insertExtendedProfileName = async (userID, Name) => {
   }
 }
 
-export const getExtendedProfile = async () => {
+export const getSelfProfile = async () => {
+
   try {
     const session = await getSession();
 
     const { data, error } = await supabase
-      .from('extended_profiles_view')
+
+      .from('profiles')
+
       .select('*')
       .eq('id', session.user.id)
       .limit(1)
