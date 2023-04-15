@@ -1,5 +1,5 @@
 <script setup>
-import { getUser, getCollectionForUser } from '@/utils/supabase'
+import { getUserID, getUserProfile, getCollectionForUser } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth';
@@ -33,8 +33,9 @@ async function copyUrl(link) {
 
 onMounted(async () => {
   if (username) {
-    userDetails.value = await getUser(username);
-    await getCollection(userDetails.value.id)
+    let userID = await getUserID(username);
+    userDetails.value = await getUserProfile(userID);
+    collection.value = await getCollectionForUser(userID);
   }
   await collectionStore.getCollection();
 });

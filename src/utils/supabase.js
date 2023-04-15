@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import router from '@/router'
-import { compileScript } from 'vue/compiler-sfc';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -21,6 +20,21 @@ export const signOut = async() => {
     let { error } = await supabase.auth.signOut()
     if (error) throw error
     router.push({name: "login"})
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const getUserID = async (username) => {
+  try {
+    const { data, error } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('username', username);
+
+    if (error) throw error
+
+    return data.pop().id
   } catch (error) {
     console.error(error)
   }
@@ -48,28 +62,13 @@ export const getSession = async () => {
     if (error) throw error
     
     if (data) {
-      const { session, user } = data
+      const { session } = data
       return session
     }
 
   } catch (error) {
     console.error(error)
   }
-}
-
-export const getUser = async (username) => {
-  try {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('username', username);
-  
-    if (error) throw error
-
-    return data.pop()
-    } catch (error) {
-      console.error(error)
-    }
 }
 
 export const getSelfCollection = async () => {
@@ -108,19 +107,6 @@ export const getCollectionForUser = async (userID) => {
   }
 }
 
-export const removeKitFromCollection = async (kitNumber) => {
-  try {
-    const { data, error } = await supabase
-      .from('collections')
-      .delete()
-      .eq('model_number', kitNumber)
-
-    if (error) throw error
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 export const addKitToCollection = async (kitNumber) => {
   try {
     const { data, error } = await supabase
@@ -128,6 +114,19 @@ export const addKitToCollection = async (kitNumber) => {
       .insert([
         { model_number: kitNumber },
       ])
+
+    if (error) throw error
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const removeKitFromCollection = async (kitNumber) => {
+  try {
+    const { data, error } = await supabase
+      .from('collections')
+      .delete()
+      .eq('model_number', kitNumber)
 
     if (error) throw error
   } catch (error) {

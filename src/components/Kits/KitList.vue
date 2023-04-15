@@ -32,6 +32,12 @@ onMounted(async () => {
   <v-responsive width="100%">
     <v-container>
       <div class="d-flex flex-wrap justify-center">
+        <v-card>
+          <v-card-title>Notice a kit is missing?  Submit using this form:</v-card-title>
+          <v-card-text>
+            <a href="https://forms.gle/vFeYGRYT7CbWFeWi7" target="_blank">https://forms.gle/vFeYGRYT7CbWFeWi7</a></v-card-text>
+        </v-card>
+        </div><div class="d-flex flex-wrap justify-center">
         <template v-for="kit in kits">
           <Suspense>
             <KitListCard :kit="kit" ></KitListCard>
