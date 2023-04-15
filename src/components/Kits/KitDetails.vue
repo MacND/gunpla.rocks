@@ -1,4 +1,5 @@
 <script setup>
+
 import { supabase, getSession, addKitToCollection } from '@/utils/supabase'
 import { useRoute } from 'vue-router'
 import { onMounted, ref } from 'vue'
@@ -33,6 +34,7 @@ async function getKitByID(kitID) {
   }
 }
 
+
 async function handleAddToCollection(kitNumber) {
   try {
     await addKitToCollection(kitNumber)
@@ -46,6 +48,7 @@ onMounted(async () => {
   await getKitByID(id);
   await authStore.getSession();
   await collectionStore.getCollection();
+
 });
 </script>
 
@@ -54,7 +57,9 @@ export default {
   data: () => ({
     show: false,
     snackbar: false,
+
     timeout: 1000
+
   })
 }
 
@@ -70,8 +75,10 @@ async function copyUrl(link) {
 
 <template>
   <v-container v-if="kit" class="d-flex flex-wrap justify-center">
+
     <div class="justify-left">
       <v-breadcrumbs :items="[{ title: 'Kit DB', href: '/db' }, { title: kit.title, href: `/kit/${kit.title}` }]"></v-breadcrumbs>
+
 
     <v-card class="justify-center pa-1" color="grey-darken-3">
       <v-card color="grey-darken-4">
@@ -139,10 +146,12 @@ async function copyUrl(link) {
                 </tr>
               </tbody>
             </v-table>
+
           </v-card>
 
         </div>
         <v-card-actions class="mb-2">
+
           <template v-if="authStore.session && collectionStore.collection">
             <template v-if="(collectionStore.collection.filter(e => e.model_number === kit.model_number).length > 0)">
               <v-btn prepend-icon="mdi-check-bold" variant="tonal" color="success">In Collection</v-btn>
@@ -153,6 +162,7 @@ async function copyUrl(link) {
                 Collection</v-btn>
             </template>
           </template>
+
           <v-btn prepend-icon="mdi-content-copy" variant="tonal" :to="{ name: 'kit', params: { id: kit.model_number } }"
             @click="copyUrl(route.path); snackbar = true">
             Copy Link
@@ -163,7 +173,9 @@ async function copyUrl(link) {
         </v-snackbar>
       </v-card>
     </v-card>
+
   </div>
+
   </v-container>
 </template>
 

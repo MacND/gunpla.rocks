@@ -31,7 +31,9 @@ onMounted(() => {
       </v-list>
       <v-divider></v-divider>
       <v-list lines="two">
+
         <v-list-item v-for="post in posts" 
+
           :key="post.id" 
           :title="post.title + ' - by ' + post.full_name"
           :subtitle="dayjs().to(dayjs(post.created_at))"
