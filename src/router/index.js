@@ -91,9 +91,24 @@ const router = createRouter({
 router.beforeEach((to) => {
   // Check if route requires auth
   const authStore = useAuthStore();
-
   if (to.meta.requiresAuth && !authStore.session) return '/login'
 })
+
+router.beforeEach((to) => {
+  // If user is logged in, check if they've set their username
+  // If they haven't, force them to the Account page to set it
+  const authStore = useAuthStore();
+
+  if (authStore.session) {
+    // If there's a session, check for the user's username
+    const user = authStore.user
+
+    if (user.userProfile.username == "") {
+      return '/account'
+    }
+
+  }
+});
 
 router.beforeEach((to, from, next) => {
   // Get the page title from the route meta data that we have defined
@@ -102,6 +117,7 @@ router.beforeEach((to, from, next) => {
 
   //Take the title from the parameters
   const titleFromParams = to.params.pageTitle;
+
   // If the route has a title, set it as the page title of the document/page
   if (title) {
     document.title = `${title} - gunpla.rocks`
@@ -112,6 +128,7 @@ router.beforeEach((to, from, next) => {
   if (titleFromParams) {
     document.title = `${titleFromParams} - ${document.title}`;
   }
+
   // Continue resolving the route
   next()
 })
