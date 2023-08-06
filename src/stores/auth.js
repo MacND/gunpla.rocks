@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
+
 import { supabase, getUserProfile } from '@/utils/supabase'
+
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -12,6 +14,7 @@ export const useAuthStore = defineStore("auth", {
   },
   actions: {
     async getSession() {
+
       try {
         const { data, error } = await supabase.auth.getSession()
         
@@ -26,6 +29,7 @@ export const useAuthStore = defineStore("auth", {
       } catch (error) {
         console.error(error)
       }
+
     }
   }
 })

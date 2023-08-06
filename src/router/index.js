@@ -10,6 +10,7 @@ import CollectionView from '@/views/CollectionView.vue'
 import ErrorView from '@/views/ErrorView.vue'
 import { useAuthStore } from '@/stores/auth';
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -56,9 +57,11 @@ const router = createRouter({
       name: 'account',
       component: AccountView,
       meta: {
+
         titlePrefix: 'Account',
         requiresAuth: true
       }
+
     },
     {
       path: '/blog/:id?',
@@ -68,6 +71,7 @@ const router = createRouter({
       meta: {
         titlePrefix: "Blog"
       }
+
     },
     {
       path: '/collection/:username?',
@@ -84,6 +88,7 @@ const router = createRouter({
       meta: {
         titlePrefix: "Error"
       }
+
     }
   ]
 });

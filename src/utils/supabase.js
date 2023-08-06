@@ -22,6 +22,7 @@ export const signOut = async() => {
     router.push({name: "login"})
   } catch (error) {
     console.error(error)
+
   }
 }
 
@@ -52,6 +53,7 @@ export const getUserProfile = async (userID) => {
     return data.pop()
   } catch (error) {
     console.error(error)
+
   }
 }
 
@@ -85,10 +87,12 @@ export const getSelfCollection = async () => {
 
       return data
     }
+
   } catch (error) {
     console.error(error)
   }
 }
+
 
 export const getCollectionForUser = async (userID) => {
   try {
@@ -144,11 +148,14 @@ export const insertExtendedProfileName = async (userID, Name) => {
 }
 
 export const getSelfProfile = async () => {
+
   try {
     const session = await getSession();
 
     const { data, error } = await supabase
+
       .from('profiles')
+
       .select('*')
       .eq('id', session.user.id)
       .limit(1)

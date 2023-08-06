@@ -1,5 +1,6 @@
 <script setup>
 import { getSelfProfile } from '@/utils/supabase'
+
 import { onMounted, ref } from 'vue'
 import dayjs from 'dayjs';
 import { useAuthStore } from '@/stores/auth';
@@ -15,6 +16,7 @@ onMounted(async () => {
   await authStore.getSession();
   await collectionStore.getCollection();
   userProfile.value = await getSelfProfile();
+
 });
 </script>
 
@@ -23,6 +25,7 @@ export default {
   data: () => ({
     tab: null,
     tabs: ['account', 'posts']
+
   }),
   watch: {
     group() {
@@ -42,6 +45,7 @@ export default {
   <v-container>
     <v-card v-if="authStore.user" elevation="6" max-width="500" rounded class="pa-4 mx-auto text-center">
       <v-avatar :image="authStore.user.user_metadata.avatar_url" size="128" class="ma-2" ></v-avatar>
+
       <h2 class="text-h5">Account Details</h2>
       <v-divider class="ma-2 mb-2" />
 
@@ -68,6 +72,7 @@ export default {
                 </template>
               <v-list-item-title >Profile Name</v-list-item-title>
               <v-list-item-subtitle >{{ userProfile.username }}</v-list-item-subtitle>
+
             </v-list-item>
           </template>
         </v-list>
@@ -92,6 +97,7 @@ export default {
                 <v-list-item-title>Email Address</v-list-item-title>
                 <v-list-item-subtitle>{{ identity.identity_data.email }}</v-list-item-subtitle>
               </v-list-item>
+
               <v-list-item>
                 <template v-slot:prepend>
                   <v-icon icon="mdi-identifier" />
@@ -99,6 +105,8 @@ export default {
                 <v-list-item-title>User ID</v-list-item-title>
                 <v-list-item-subtitle>{{ identity.identity_data.sub }}</v-list-item-subtitle>
               </v-list-item>
+
+
 
             </template>
           </v-list>
