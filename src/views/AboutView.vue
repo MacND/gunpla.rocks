@@ -7,9 +7,9 @@
       <v-card-text>
         <p>gunpla.rocks is a place for people to share their gunpla collections and track which kits they've collected.</p>
         <br />
-        <p>This website is built with Vue 3, Vite, Veutify, and Supabase.  Please check out the project on <a href="https://github.com/macnd/gunpla.rocks">GitHub!</a></p>
+        <p>This website is built with Vue 3, Vite, Veutify, and Supabase.  Please check out the project on <a href="https://github.com/macnd/gunpla.rocks" target="_blank">GitHub!</a></p>
         <br />
-        <p>Logo and favicon designs by Pigeon - <a href="https://pigeoncreative.carrd.co/#">https://pigeoncreative.carrd.co</a></p>
+        <p>Logo and favicon designs by Pigeon - <a href="https://pigeoncreative.carrd.co/#" target="_blank">https://pigeoncreative.carrd.co</a></p>
       </v-card-text>
     </v-card>
   </v-container>

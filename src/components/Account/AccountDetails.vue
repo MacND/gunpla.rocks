@@ -104,20 +104,6 @@ export default {
           </v-list>
         </v-window-item>
 
-        <!-- <v-window-item value="collection">
-          <v-list density="compact" class="text-start">
-            <template v-for="item in collectionStore.collection">
-            <v-list-item :to="{ name: 'kit', params: { id: item.model_number } }">
-                <template v-slot:prepend>
-                  <v-icon :icon="'mdi-' + robotIcons[Math.floor(Math.random()*robotIcons.length)]"></v-icon>
-                </template>
-                <v-list-item-title>{{ item.title }}</v-list-item-title>
-                <v-list-item-subtitle>{{ item.subtitle }}</v-list-item-subtitle>
-              </v-list-item>
-            </template>
-          </v-list>
-        </v-window-item> -->
-
         <v-window-item value="posts">
           <v-list density="compact" class="text-start">
             <v-list-item>
